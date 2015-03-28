@@ -1,3 +1,3 @@
 # Robotics
 
-use git for Robotics exercise. Starting with exercise 6.
+use git for Robotics exercise.
