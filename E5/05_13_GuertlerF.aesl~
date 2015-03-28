@@ -1,0 +1,77 @@
+<!DOCTYPE aesl-source>
+<network>
+
+
+<!--list of global events-->
+
+
+<!--list of constants-->
+<constant value="0" name="NO_COLOR"/>
+<constant value="1" name="RED"/>
+<constant value="2" name="GREEN"/>
+<constant value="3" name="BLUE"/>
+
+
+<!--show keywords state-->
+<keywords flag="true"/>
+
+
+<!--node e-puck3-->
+<node nodeId="4" name="e-puck3"># using less bytecode
+# reducing risk of event execution kill with native functions (mean instead of average)
+
+var meanRed
+var meanGreen
+var meanBlue
+var minRed
+var minGreen
+var minBlue
+var maxRed
+var maxGreen
+var maxBlue
+
+var color = NO_COLOR
+
+onevent camera
+	call math.stat(cam.red, minRed, maxRed, meanRed)
+	call math.stat(cam.green, minGreen, maxGreen, meanGreen)
+	call math.stat(cam.blue, minBlue, maxBlue, meanBlue)
+	
+	if meanRed > 28 and meanBlue &lt; 24 and meanGreen &lt; 24 then
+		color = RED
+		
+	elseif meanRed &lt; 24 and meanBlue > 25 then
+		color = BLUE
+		
+	elseif meanRed &lt; 24 and meanBlue &lt; 24 and meanGreen > 22 then
+		color = GREEN
+		
+	else
+		color = NO_COLOR
+	end
+	
+onevent ir_sensors
+
+	if color == NO_COLOR then
+		leds[4] = 0
+		leds[2] = 0
+		leds[6] = 0
+	
+	elseif color == RED then
+		leds[4] = 1
+		leds[2] = 0
+		leds[6] = 0
+	
+	elseif color == 	BLUE then
+		leds[4] = 0
+		leds[2] = 1
+		leds[6] = 1
+		
+	elseif color == GREEN then
+		leds[4] = 1
+		leds[2] = 1
+		leds[6] = 1
+	end
+</node>
+
+</network>

@@ -1,0 +1,157 @@
+<!DOCTYPE aesl-source>
+<network>
+
+
+<!--list of global events-->
+<event size="0" name="stop"/>
+<event size="0" name="execAdvLover"/>
+<event size="0" name="execExplorer"/>
+
+
+<!--list of constants-->
+<constant value="0" name="STOP"/>
+<constant value="1" name="ADVANCED_LOVER"/>
+<constant value="2" name="EXPLORER"/>
+<constant value="1500" name="P_THRESH"/>
+<constant value="600" name="S_INIT"/>
+
+
+<!--show keywords state-->
+<keywords flag="true"/>
+
+
+<!--node e-puck2-->
+<node nodeId="2" name="e-puck2">##########################################################
+#
+#	Robotics Project [SA 12] | University of Fribourg
+#		
+# 	Author:			Gürtler Fabienne
+# 	Created:     	13.03.2015
+# 	Last modified: 	16.03.2015
+#
+#	Description: 	Emits the events
+#
+##########################################################
+
+var counter = 0
+
+onevent ir_sensors # infinite loop
+	counter++
+	if counter == 200 then
+		emit execAdvLover
+	elseif counter == 400 then
+		emit stop
+	elseif counter == 600 then
+		emit execExplorer
+	elseif counter == 800 then
+		emit stop
+	end
+	if counter >= 800 then
+		counter = 0
+	end</node>
+
+
+<!--node e-puck1-->
+<node nodeId="1" name="e-puck1">##########################################################
+#
+#	Robotics Project [SA 12] | University of Fribourg
+#		
+# 	Author:			Gürtler Fabienne
+# 	Created:     	13.03.2015
+# 	Last modified: 	16.03.2015
+#
+#	Description: 	Implements 3 different States.
+#					STOP: idle state
+#					ADVANCED_LOVER: see series 3
+#					EXPLORER: see series 3.
+#	Code from the solutions of series 3 was used.
+#	
+##########################################################
+
+var state = STOP
+
+# proximity
+var proxRight
+var proxLeft
+# delta speed
+var ds
+
+# advanced Lover behavior
+sub behaviorAdvLover
+	# proximity
+	proxRight = (prox[0] + 3*prox[1] + prox[2])/5
+	proxLeft = (prox[7] + 3*prox[6] + prox[5])/5
+
+	# check which side is closer to obstacle
+	if proxRight > proxLeft then # turn left
+
+		# delta speed ds
+		call math.muldiv(ds, S_INIT, proxRight, P_THRESH)
+
+		# right and left speed
+		speed.right = ds
+	   	speed.left = S_INIT - ds
+
+	else # turn right
+
+		# delta speed ds
+		call math.muldiv(ds, S_INIT, proxLeft, P_THRESH)
+
+		# right and left speed
+		speed.right = S_INIT - ds
+	   	speed.left = ds
+
+	end
+	
+# Explorer behavior	
+sub behaviorExplorer
+	# proximity
+	proxRight = (4*prox[0] + 2*prox[1] + prox[2])/7
+	proxLeft = (4*prox[7] + 2*prox[6] + prox[5])/7
+
+	# check which side is closer to obstacle
+	if proxRight > proxLeft then # turn left
+
+		# delta speed ds
+		call math.muldiv(ds, S_INIT, proxRight, P_THRESH)
+
+		# right and left speed
+	   	speed.right = S_INIT + ds
+	   	speed.left = S_INIT - ds
+
+	else # turn right
+
+		# delta speed ds
+		call math.muldiv(ds, S_INIT, proxLeft, P_THRESH)
+
+		# right and left speed
+		speed.right = S_INIT - ds
+		speed.left = S_INIT + ds
+
+	end
+	
+# stop behavior -> idle State
+sub behaviorStop
+	speed.left = 0
+	speed.right = 0
+	
+onevent stop
+	state = STOP
+	
+onevent execAdvLover
+	state = ADVANCED_LOVER
+	
+onevent execExplorer
+	state = EXPLORER
+	
+onevent ir_sensors # infinite loop
+	if  state == STOP then
+		callsub behaviorStop
+	elseif state == ADVANCED_LOVER then
+		callsub behaviorAdvLover
+	elseif state == EXPLORER then
+		callsub behaviorExplorer
+	end</node>
+
+
+</network>

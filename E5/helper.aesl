@@ -1,0 +1,47 @@
+<!DOCTYPE aesl-source>
+<network>
+
+
+<!--list of global events-->
+<event size="6" name="print"/>
+
+
+<!--list of constants-->
+
+
+<!--show keywords state-->
+<keywords flag="true"/>
+
+
+<!--node e-puck1-->
+<node nodeId="2" name="e-puck1">var r1 = cam.red[5]
+var r2 = cam.red[15]
+var r3 = cam.red[25]
+var r4 = cam.red[35]
+var r5 = cam.red[45]
+var r6 = cam.red[55]
+
+var b1 = cam.blue[5]
+var b2 = cam.blue[15]
+var b3 = cam.blue[25]
+var b4 = cam.blue[35]
+var b5 = cam.blue[45]
+var b6 = cam.blue[55]
+
+var g1 = cam.green[5]
+var g2 = cam.green[15]
+var g3 = cam.green[25]
+var g4 = cam.green[35]
+var g5 = cam.green[45]
+var g6 = cam.green[55]
+
+emit print [r1,r2,r3,r4,r5,r6]
+emit print [b1,b2,b3,b4,b5,b6]
+emit print [g1,g2,g3,g4,g5,g6]
+
+
+
+</node>
+
+
+</network>

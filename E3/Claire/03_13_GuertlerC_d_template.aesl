@@ -1,0 +1,219 @@
+<!DOCTYPE aesl-source>
+<network>
+
+
+<!--list of global events-->
+
+
+<!--list of constants-->
+<constant value="1000" name="P_THRESH"/>
+<constant value="600" name="S_INIT"/>
+<constant value="300" name="MINDIFF"/>
+<constant value="2000" name="P_THRESH_TURN"/>
+
+
+<!--show keywords state-->
+<keywords flag="true"/>
+
+
+<!--node e-puck 2-->
+<node nodeId="2" name="e-puck 2">
+##########################################################
+#
+#	Robotics Project [SP 15] | University of Fribourg
+#		
+# 	Author:			Claire Guertler
+# 	Created:     	09.03.15
+# 	Last modified: 	10.03.15
+#
+#	Description: 	Advanced Love Behavior
+#
+##########################################################
+
+var proxRight
+var proxLeft
+var proxTotal
+var dsLeft
+var dsRight
+var maxProx
+var minProx
+var diffProx
+
+
+onevent ir_sensors
+	# proximity
+	proxLeft = (6*prox[7] + 4*prox[6] + 3*prox[5] + prox[4])/14
+	proxRight = (6*prox[7] + 4*prox[6] + 3*prox[5] + prox[4])/14
+	call math.muldiv(dsLeft, S_INIT, proxLeft, P_THRESH)
+	call math.muldiv(dsRight, S_INIT, proxRight, P_THRESH)
+	call math.max(maxProx, proxLeft, proxRight)
+	call math.min(minProx, proxLeft, proxRight)
+	call math.sub(diffProx, maxProx, minProx)
+	call math.add(proxTotal, proxLeft, proxRight)
+
+
+#check if the roboter is too close to the obstacle
+	if proxTotal > P_THRESH_TURN then
+		#turn right
+		speed.left = S_INIT
+		speed.right = -S_INIT
+	
+	#sometimes when the roboter is really close to the obstacle the prox values drop below zero		
+	elseif	proxTotal &lt; 0 then
+		#turn right
+		speed.left = S_INIT
+		speed.right = -S_INIT
+		
+	else
+		#check if the roboter is closer to the obstacle than a certain distance
+		if proxTotal > MINDIFF then
+			#check if proxLeft and proxRight are to similar to each other, if so make sure the roboter manages to turn properly
+			if diffProx &lt; MINDIFF then
+				#turn right
+				speed.left = S_INIT
+				speed.right = -S_INIT
+			
+			else
+				# check which side is closer to obstacle
+				if proxRight > proxLeft then # turn left
+					# right and left speed
+					speed.right = S_INIT + dsRight
+					speed.left = S_INIT - dsLeft
+		
+				else # turn right
+					# right and left speed
+					speed.right = S_INIT - dsRight
+					speed.left = S_INIT + dsLeft
+				end
+			end	
+		else
+			# check which side is closer to obstacle
+			if proxRight > proxLeft then # turn left
+				# right and left speed
+				speed.right = S_INIT + dsRight
+				speed.left = S_INIT - dsLeft
+		
+			else # turn right
+				# right and left speed
+				speed.right = S_INIT - dsRight
+				speed.left = S_INIT + dsLeft
+	end
+		end
+	
+	end	
+</node>
+
+
+<!--node e-puck 1-->
+<node nodeId="1" name="e-puck 1">
+#-------------------------------------------------------------------------------				
+# Basic love behaviour
+#-------------------------------------------------------------------------------
+
+var proxFront
+var ds   # delta speed
+ 
+onevent ir_sensors
+
+	# proximity
+	proxFront = (prox[0]+prox[7])/2
+
+	# delta speed ds
+	call math.muldiv(ds, S_INIT, proxFront, P_THRESH)
+	
+	# right and left speed
+	speed.right = S_INIT - ds
+	speed.left = S_INIT - ds
+
+</node>
+
+
+<!--node e-puck 3-->
+<node nodeId="3" name="e-puck 3">
+##########################################################
+#
+#	Robotics Project [SP 15] | University of Fribourg
+#		
+# 	Author:			Claire Guertler
+# 	Created:     	09.03.15
+# 	Last modified: 	10.03.15
+#
+#	Description: 	Explore Behavior
+#
+##########################################################
+
+
+var proxRight
+var proxLeft
+var proxTotal
+var dsRight
+var dsLeft
+var maxProx
+var minProx
+var diffProx
+
+onevent ir_sensors
+	# proximity
+	proxLeft = (6*prox[7] + 4*prox[6] + 2*prox[5])/12
+	proxRight = (6*prox[0] + 4*prox[1] + 2*prox[2])/12
+	call math.muldiv(dsLeft, S_INIT, proxLeft, P_THRESH)
+	call math.muldiv(dsRight, S_INIT, proxRight, P_THRESH)
+	call math.max(maxProx, proxLeft, proxRight)
+	call math.min(minProx, proxLeft, proxRight)
+	call math.sub(diffProx, maxProx, minProx)
+	call math.add(proxTotal, proxLeft, proxRight)
+
+	#check if the roboter is too close to the obstacle
+	if proxTotal > P_THRESH_TURN then
+		#turn right
+		speed.left = S_INIT
+		speed.right = -S_INIT
+	
+	#sometimes when the roboter is really close to the obstacle the prox values drop below zero		
+	elseif	proxTotal &lt; 0 then
+		#turn right
+		speed.left = S_INIT
+		speed.right = -S_INIT
+		
+	else
+		#check if the roboter is closer to the obstacle than a certain distance
+		if proxTotal > MINDIFF then
+			#check if proxLeft and proxRight are to similar to each other, if so make sure the roboter manages to turn properly
+			if diffProx &lt; MINDIFF then
+				#turn right
+				speed.left = S_INIT
+				speed.right = -S_INIT
+			
+			else
+				# check which side is closer to obstacle
+				if proxRight > proxLeft then # turn left
+					# right and left speed
+					speed.left = S_INIT + dsLeft
+					speed.right = S_INIT + 2*dsRight
+	
+				else # turn right
+					# right and left speed
+					speed.left = S_INIT + 2*dsLeft
+					speed.right = S_INIT + dsRight
+				end
+			end	
+		else
+			# check which side is closer to obstacle
+			if proxRight > proxLeft then # turn left
+				# right and left speed
+				speed.left = S_INIT + dsLeft
+				speed.right = S_INIT + 2*dsRight
+	
+			else # turn right
+				# right and left speed
+				speed.left = S_INIT + 2*dsLeft
+				speed.right = S_INIT + dsRight
+			end
+		end
+	
+	end	
+
+</node>
+
+
+</network>

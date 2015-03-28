@@ -1,0 +1,120 @@
+<!DOCTYPE aesl-source>
+<network>
+
+
+<!--list of global events-->
+
+
+<!--list of constants-->
+<constant value="0" name="NO_COLOR"/>
+<constant value="1" name="RED"/>
+<constant value="2" name="GREEN"/>
+<constant value="3" name="BLUE"/>
+<constant value="800" name="P_THRESH"/>
+<constant value="400" name="S_INIT"/>
+
+
+<!--show keywords state-->
+<keywords flag="true"/>
+
+
+<!--node e-puck3-->
+<node nodeId="4" name="e-puck3">##########################################################
+#
+#	Robotics Project [SA 12] | University of Fribourg
+#		
+# 	Author:			Gürtler Fabienne
+# 	Created:     	23.03.2015
+# 	Last modified: 	24.03.2015
+#
+#	Description: 	Explorer behaviour with visual feedback
+#					of color recognition
+#
+##########################################################
+
+var meanRed
+var meanGreen
+var meanBlue
+var minRed
+var minGreen
+var minBlue
+var maxRed
+var maxGreen
+var maxBlue
+
+var color = NO_COLOR
+
+var proxRight
+var proxLeft
+var ds   # delta speed
+
+onevent camera
+	# calculation of mean colors taken from demo
+	call math.stat(cam.red, minRed, maxRed, meanRed)
+	call math.stat(cam.green, minGreen, maxGreen, meanGreen)
+	call math.stat(cam.blue, minBlue, maxBlue, meanBlue)
+	
+	if meanRed > 24 and meanBlue &lt; 23 and meanGreen &lt; 23 then
+		color = RED
+		
+	elseif meanRed &lt; 22 and meanBlue > 19 and meanGreen &lt; 22 then
+		color = BLUE
+		
+	elseif meanRed &lt; 20 and meanBlue &lt; 20 and meanGreen > 16 then
+		color = GREEN
+		
+	else
+		color = NO_COLOR
+	end
+	
+onevent ir_sensors
+	# visual feedback
+	if color == NO_COLOR then
+		leds[4] = 0
+		leds[2] = 0
+		leds[6] = 0
+	
+	elseif color == RED then
+		leds[4] = 1
+		leds[2] = 0
+		leds[6] = 0
+	
+	elseif color == BLUE then
+		leds[4] = 0
+		leds[2] = 1
+		leds[6] = 1
+		
+	elseif color == GREEN then
+		leds[4] = 1
+		leds[2] = 1
+		leds[6] = 1
+	end
+	
+	# explorer behavior from series 3
+	# proximity
+	proxRight = (4*prox[0] + 2*prox[1] + prox[2])/7
+	proxLeft = (4*prox[7] + 2*prox[6] + prox[5])/7
+
+	# check which side is closer to obstacle
+	if proxRight > proxLeft then # turn left
+
+		# delta speed ds
+		call math.muldiv(ds, S_INIT, proxRight, P_THRESH)
+
+		# right and left speed
+	   	speed.right = S_INIT + ds
+	   	speed.left = S_INIT - ds
+
+	else # turn right
+
+		# delta speed ds
+		call math.muldiv(ds, S_INIT, proxLeft, P_THRESH)
+
+		# right and left speed
+		speed.right = S_INIT - ds
+		speed.left = S_INIT + ds
+
+	end</node>
+
+
+</network>

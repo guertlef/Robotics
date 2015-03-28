@@ -1,0 +1,57 @@
+<!DOCTYPE aesl-source>
+<network>
+
+
+<!--list of global events-->
+<event size="0" name="eventA"/>
+<event size="0" name="eventB"/>
+
+
+<!--list of constants-->
+<constant value="0" name="STATE_A"/>
+<constant value="1" name="STATE_B"/>
+
+
+<!--show keywords state-->
+<keywords flag="true"/>
+
+
+<!--node e-puck 2-->
+<node nodeId="2" name="e-puck 2">var counter = 0
+
+onevent ir_sensors # infinite loop
+	counter++
+	if counter == 200 then
+		emit eventA
+	elseif counter == 400 then
+		emit eventB
+	end
+	if counter >= 400 then
+		counter = 0
+	end</node>
+
+
+<!--node e-puck 1-->
+<node nodeId="1" name="e-puck 1">var state = STATE_A
+
+sub behaviorA
+	# Execute behavior A
+	
+sub behaviorB
+	# Execue behavior B
+
+onevent eventA
+	state = STATE_A
+
+onevent eventB
+	state = STATE_B
+
+onevent ir_sensors # infinite loop
+	if state == STATE_A then
+		callsub behaviorA
+	elseif state == STATE_B then
+		callsub behaviorB
+	end</node>
+
+
+</network>

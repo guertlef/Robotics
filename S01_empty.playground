@@ -1,0 +1,14 @@
+<!DOCTYPE aseba-playground>
+<!-- Description: empty playground -->
+<!-- Date: 16.02.2015 -->
+<!-- Author: Simon Studer -->
+<aseba-playground>
+    <color name="wall" r="0.9" g="0.9" b="0.9" />
+    <color name="red" r="0.77" g="0.2" b="0.15" />
+    <color name="green" r="0" g="0." b="0.17" />
+    <color name="blue" r="0" g="0.38" b="0.61" />
+
+    <world w="100" h="100" color="wall"/>
+
+    <e-puck x="50" y="50"/>
+</aseba-playground>

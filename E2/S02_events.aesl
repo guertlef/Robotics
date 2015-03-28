@@ -1,0 +1,110 @@
+<!DOCTYPE aesl-source>
+<network>
+
+
+<!--list of global events-->
+<event size="0" name="stop"/>
+<event size="1" name="forward"/>
+<event size="1" name="backward"/>
+<event size="2" name="curve"/>
+
+
+<!--list of constants-->
+<constant value="400" name="SPEED_NORM"/>
+<constant value="0" name="SPEED_STOP"/>
+<constant value="30000" name="DELAY"/>
+
+
+<!--show keywords state-->
+<keywords flag="true"/>
+
+
+<!--node e-puck 1-->
+<node nodeId="1" name="e-puck 1">
+##########################################################
+#
+#	Robotics Project [SA 12] | University of Fribourg
+#		
+# 	Author:			TODO
+# 	Created:     	TODO
+# 	Last modified: 	TODO
+#
+#	Description: 	TODO
+#
+##########################################################
+
+### Events ###
+onevent stop
+	#TODO: implement
+	
+onevent forward
+	#TODO: implement
+	
+onevent backward
+	#TODO: implement
+	
+onevent curve
+	#TODO: implement (dont forget to mirror behavior)</node>
+
+
+<!--node e-puck 2-->
+<node nodeId="2" name="e-puck 2">
+##########################################################
+#
+#	Robotics Project [SA 12] | University of Fribourg
+#		
+# 	Author:			TODO
+# 	Created:     	TODO
+# 	Last modified: 	TODO
+#
+#	Description: 	TODO
+#
+##########################################################
+
+var i
+var j
+
+# forward
+emit forward SPEED_NORM
+for i in 0:DELAY do end # wait before stopping movement
+emit stop
+
+for i in 0:DELAY do end # wait between movements
+
+#TODO: curved triangle
+
+# backward
+emit backward SPEED_NORM
+for i in 0:DELAY do end
+emit stop</node>
+
+
+<!--node e-puck 3-->
+<node nodeId="3" name="e-puck 3">
+##########################################################
+#
+#	Robotics Project [SA 12] | University of Fribourg
+#		
+# 	Author:			TODO
+# 	Created:     	TODO
+# 	Last modified: 	TODO
+#
+#	Description: 	TODO
+#
+##########################################################
+
+### Events ###
+onevent stop
+	#TODO: implement
+	
+onevent forward
+	#TODO: implement
+	
+onevent backward
+	#TODO: implement
+	
+onevent curve
+	#TODO: implement (dont forget to mirror behavior)</node>
+
+
+</network>

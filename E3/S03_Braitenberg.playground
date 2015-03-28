@@ -1,0 +1,27 @@
+<!DOCTYPE aseba-playground>
+<!-- Description: empty playground -->
+<!-- Date: 16.02.2015 -->
+<!-- Author: Simon Studer -->
+<aseba-playground>
+    <color name="wall" r="0.9" g="0.9" b="0.9" />
+    <color name="red" r="0.77" g="0.2" b="0.15" />
+    <color name="green" r="0" g="0." b="0.17" />
+    <color name="blue" r="0" g="0.38" b="0.61" />
+
+    <world w="100" h="100" color="wall"/>
+
+	<wall x="50" y="45
+	" l1="40" l2="20" h="8" color="wall"/>
+
+	<wall x="60" y="15" l1="2" l2="20" h="8" color="wall"/>
+
+	<wall x="30" y="90" l1="4" l2="4" h="8" color="wall"/>
+	<wall x="30" y="70" l1="4" l2="4" h="8" color="wall"/>
+	<wall x="50" y="80" l1="4" l2="4" h="8" color="wall"/>
+	<wall x="70" y="90" l1="4" l2="4" h="8" color="wall"/>
+	<wall x="70" y="70" l1="4" l2="4" h="8" color="wall"/>
+
+    <e-puck x="10" y="15"/>
+    <e-puck x="10" y="45"/>
+    <e-puck x="10" y="85"/>
+</aseba-playground>

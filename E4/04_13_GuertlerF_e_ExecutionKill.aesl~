@@ -1,0 +1,43 @@
+<!DOCTYPE aesl-source>
+<network>
+
+
+<!--list of global events-->
+<event size="1" name="go"/>
+<event size="1" name="turn"/>
+
+
+<!--list of constants-->
+<constant value="600" name="SPEED_NORM"/>
+<constant value="10000" name="DELAY"/>
+
+
+<!--show keywords state-->
+<keywords flag="true"/>
+
+
+<!--node e-puck2-->
+<node nodeId="3" name="e-puck2"># Safe behavior
+var i
+emit go(SPEED_NORM)
+for i in 0:DELAY do end	# wait
+emit turn(SPEED_NORM)
+for i in 0:DELAY do end
+
+# Unsafe behavior: Event Execution Killed problem
+emit go(SPEED_NORM)
+emit turn(SPEED_NORM)</node>
+
+
+<!--node e-puck1-->
+<node nodeId="2" name="e-puck1">onevent go
+	speed.left = args[0]
+	speed.right = args[0]
+	
+onevent turn
+	speed.left = args[0]
+	speed.right = -args[0]
+</node>
+
+
+</network>

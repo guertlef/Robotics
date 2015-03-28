@@ -1,0 +1,181 @@
+<!DOCTYPE aesl-source>
+<network>
+
+
+<!--list of global events-->
+<event size="1" name="color_signal"/>
+
+
+<!--list of constants-->
+<constant value="0" name="NO_COLOR"/>
+<constant value="1" name="RED"/>
+<constant value="2" name="BLUE"/>
+<constant value="3" name="GREEN"/>
+<constant value="400" name="S_INIT"/>
+<constant value="800" name="P_THRESH"/>
+<constant value="59" name="CAM_MAX"/>
+<constant value="60" name="CAM_CNT"/>
+<constant value="10" name="CAM_STEP"/>
+
+
+<!--show keywords state-->
+<keywords flag="true"/>
+
+
+<!--node e-puck 3-->
+<node nodeId="3" name="e-puck 3">##########################################################
+#
+#	Robotics Project [SA 12] | University of Fribourg
+#		
+# 	Author:			Gürtler Fabienne
+# 	Created:     	24.03.2015
+# 	Last modified: 	24.03.2015
+#
+#	Description: 	signals which color e-puck 1 sees.
+#
+#					no color -> no movement
+#					red 	 -> drive forward
+#					blue 	 -> turn right
+#					green 	 -> turn left 
+#
+##########################################################
+var signal = NO_COLOR
+var i
+
+sub noColor
+	speed.left = 0
+	speed.right = 0
+
+sub red
+	speed.left = S_INIT
+	speed.right = S_INIT
+	
+sub blue
+	speed.left = S_INIT
+	speed.right = -S_INIT
+	
+sub green
+	speed.left = -S_INIT
+	speed.right = S_INIT
+
+onevent color_signal
+	if args[0] == NO_COLOR then
+		callsub noColor
+	elseif args[0] == RED then
+		callsub red
+	elseif args[0] == BLUE then
+		callsub blue
+	elseif args[0] == GREEN then
+		callsub green			
+	end</node>
+
+
+<!--node e-puck 1-->
+<node nodeId="1" name="e-puck 1">##########################################################
+#
+#	Robotics Project [SA 12] | University of Fribourg
+#		
+# 	Author:			Gürtler Fabienne
+# 	Created:     	24.03.2015
+# 	Last modified: 	24.03.2015
+#
+#	Description: 	Explorere behavior and visual feedback
+#					about colors he sees.
+#
+#					Code from series 3 &amp; demo was used.
+#
+##########################################################
+#*
+var meanRed
+var meanGreen
+var meanBlue
+var minRed
+var minGreen
+var minBlue
+var maxRed
+var maxGreen
+var maxBlue
+*#
+var i
+var avgRed
+var avgGreen
+var avgBlue
+var color = NO_COLOR
+
+var proxRight
+var proxLeft
+var ds   # delta speed
+
+onevent camera
+	# calculation of average color values taken from demo
+	for i in 0:CAM_MAX step CAM_STEP do
+		avgRed += cam.red[i]
+		avgGreen += cam.green[i]
+		avgBlue += cam.blue[i]
+	end
+	avgRed /= CAM_CNT
+	avgGreen /= CAM_CNT
+	avgBlue /= CAM_CNT
+	
+	if avgRed > 6 and avgBlue &lt; 4 and avgGreen &lt; 4 then
+		color = RED
+		
+	elseif avgRed &lt; 4 and avgBlue > 6 and avgGreen &lt; 4 then
+		color = BLUE
+		
+	elseif avgRed &lt; 4 and avgBlue &lt; 4 and avgGreen > 6 then
+		color = GREEN
+		
+	else
+		color = NO_COLOR
+	end
+	
+onevent ir_sensors
+	# because there are no leds in simulation he emits an event
+	# and other e-puck reacts to it.
+	if color == NO_COLOR then
+		emit color_signal NO_COLOR	
+	
+	elseif color == RED then
+		emit color_signal RED
+		
+	elseif color == 	BLUE then
+		emit color_signal BLUE
+		
+	elseif color == GREEN then
+		emit color_signal GREEN
+		
+	end
+	
+	# explorer behavior (see series 3)
+	# proximity
+	proxRight = (4*prox[0] + 2*prox[1] + prox[2])/7
+	proxLeft = (4*prox[7] + 2*prox[6] + prox[5])/7
+
+	# check which side is closer to obstacle
+	if proxRight > proxLeft then # turn left
+
+		# delta speed ds
+		call math.muldiv(ds, S_INIT, proxRight, P_THRESH)
+
+		# right and left speed
+	   	speed.right = S_INIT + ds
+	   	speed.left = S_INIT - ds
+
+	else # turn right
+
+		# delta speed ds
+		call math.muldiv(ds, S_INIT, proxLeft, P_THRESH)
+
+		# right and left speed
+		speed.right = S_INIT - ds
+		speed.left = S_INIT + ds
+
+	end</node>
+
+
+<!--node e-puck 2-->
+<node nodeId="2" name="e-puck 2"></node>
+
+
+</network>

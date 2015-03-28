@@ -1,0 +1,94 @@
+<!DOCTYPE aesl-source>
+<network>
+
+
+<!--list of global events-->
+<event size="1" name="print"/>
+
+
+<!--list of constants-->
+<constant value="59" name="CAM_MAX"/>
+<constant value="60" name="CAM_CNT"/>
+<constant value="10" name="CAM_STEP"/>
+<constant value="0" name="yxc"/>
+
+
+<!--show keywords state-->
+<keywords flag="true"/>
+
+
+<!--node e-puck 2-->
+<node nodeId="2" name="e-puck 2"># get average of all cameras with for loop
+# using a lot of bytecode
+# reducing risk of event execution kill by skipping values and losing information
+
+var i
+var avgRed
+var avgGreen
+var avgBlue
+
+onevent camera
+	for i in 0:CAM_MAX step CAM_STEP do
+		avgRed += cam.red[i]
+		avgGreen += cam.green[i]
+		avgBlue += cam.blue[i]
+	end
+	avgRed /= CAM_CNT
+	avgGreen /= CAM_CNT
+	avgBlue /= CAM_CNT
+	emit print avgRed
+	emit print avgGreen
+	emit print avgBlue</node>
+
+
+<!--node e-puck 1-->
+<node nodeId="1" name="e-puck 1"># get average of all cameras with for loop
+# using a lot of bytecode
+# risking event execution kill
+
+var i
+var avgRed
+var avgGreen
+var avgBlue
+
+onevent camera
+	for i in 0:CAM_MAX do
+		avgRed += cam.red[i]
+		avgGreen += cam.green[i]
+		avgBlue += cam.blue[i]
+	end
+	avgRed /= CAM_CNT
+	avgGreen /= CAM_CNT
+	avgBlue /= CAM_CNT
+	emit print avgRed
+	emit print avgGreen
+	emit print avgBlue</node>
+
+
+<!--node e-puck 3-->
+<node nodeId="3" name="e-puck 3"># get average of all cameras
+# using less bytecode
+# reducing risk of event execution kill with native functions (mean instead of average)
+
+var i
+var meanRed
+var meanGreen
+var meanBlue
+var minRed
+var minGreen
+var minBlue
+var maxRed
+var maxGreen
+var maxBlue
+
+
+onevent camera
+	call math.stat(cam.red, minRed, maxRed, meanRed)
+	call math.stat(cam.green, minGreen, maxGreen, meanGreen)
+	call math.stat(cam.blue, minBlue, maxBlue, meanBlue)
+	emit print meanRed
+	emit print meanGreen
+	emit print meanBlue</node>
+
+
+</network>

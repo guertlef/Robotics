@@ -1,0 +1,161 @@
+<!DOCTYPE aesl-source>
+<network>
+
+
+<!--list of global events-->
+
+
+<!--list of constants-->
+<constant value="500" name="P_THRESH"/>
+<constant value="600" name="S_INIT"/>
+<constant value="500" name="MIN_DIFF"/>
+<constant value="300" name="P_THRESH_ADV"/>
+<constant value="500" name="P_THRESH_ADV2"/>
+<constant value="500" name="P_THRESH_EXPL"/>
+
+
+<!--show keywords state-->
+<keywords flag="true"/>
+
+
+<!--node e-puck2-->
+<node nodeId="3" name="e-puck2">##########################################################
+#
+#	Robotics Project [SA 12] | University of Fribourg
+#		
+# 	Author:			Gürtler Fabienne
+# 	Created:     	05.03.2015
+# 	Last modified: 	10.03.2015
+#
+#	Description: 	Advanced love behaviour
+#
+##########################################################
+
+var proxRight
+var proxLeft
+var proxDiff
+var proxSingle
+var max
+var min
+# delta speed
+var ds_left 
+var ds_right
+
+onevent ir_sensors
+	# proximity
+	proxRight = (8*prox[0]+4*prox[1]+3*prox[2])/15
+	proxLeft = (8*prox[7]+4*prox[6]+3*prox[5])/15
+	proxSingle = (proxLeft + proxRight)/2
+	# delta speed
+	call math.muldiv(ds_left,S_INIT,proxLeft,P_THRESH)
+	call math.muldiv(ds_right,S_INIT,proxRight,P_THRESH)
+	
+	call math.max(max, proxLeft, proxRight)
+	call math.min(min, proxLeft, proxRight)
+	
+	proxDiff = max - min
+	if proxSingle > P_THRESH_ADV2 then	
+	# if proxLeft and proxRight are too similar, turn right
+		if proxDiff &lt; MIN_DIFF then
+			speed.left = S_INIT	
+			speed.right = -S_INIT
+		end
+	elseif proxSingle &lt; 0 then
+		speed.left = S_INIT
+		speed.right = -S_INIT
+	else
+		# Advanced love behavior
+		# turn away from source if in certain distance
+		if proxSingle > P_THRESH_ADV then
+			speed.left = S_INIT - ds_right
+			speed.right = S_INIT - ds_left
+		
+		# go to source if not yet close enough
+		else						
+			speed.left = S_INIT - ds_left
+			speed.right = S_INIT - ds_right
+		end
+	end</node>
+
+
+<!--node e-puck3-->
+<node nodeId="4" name="e-puck3">##########################################################
+#
+#	Robotics Project [SA 12] | University of Fribourg
+#		
+# 	Author:			Gürtler Fabienne
+# 	Created:     	05.03.2015
+# 	Last modified: 	10.03.2015
+#
+#	Description: 	Explore behaviour
+#
+##########################################################
+
+var proxRight
+var proxLeft
+var proxDiff
+var proxSingle
+var max
+var min
+# delta speed
+var ds_left
+var ds_right
+
+onevent ir_sensors
+	# proximity
+	proxRight = (6*prox[0]+4*prox[1]+2*prox[2])/12
+	proxLeft = (6*prox[7]+4*prox[6]+2*prox[5])/12
+	proxSingle = (proxLeft + proxRight)/2
+
+	call math.muldiv(ds_left,S_INIT,proxLeft,P_THRESH)
+	call math.muldiv(ds_right,S_INIT,proxRight,P_THRESH)	
+
+	call math.max(max, proxLeft, proxRight)
+	call math.min(min, proxLeft, proxRight)
+	
+	proxDiff = max - min
+	# if explorer is too close to source
+	if proxSingle > P_THRESH_EXPL then	
+	# if proxLeft and proxRight are too similar, turn left
+		if proxDiff &lt; MIN_DIFF then
+			speed.left = -S_INIT	
+			speed.right = S_INIT
+			
+		end
+		
+	elseif proxSingle &lt; 0 then
+		speed.left = -S_INIT
+		speed.right = S_INIT
+	else
+		# Explorer behavior according to Braitenberg
+		speed.left = S_INIT - ds_right
+		speed.right = S_INIT - ds_left
+	end
+	</node>
+
+
+<!--node e-puck1-->
+<node nodeId="2" name="e-puck1">
+#-------------------------------------------------------------------------------				
+# Basic love behaviour
+#-------------------------------------------------------------------------------
+
+var proxFront
+var ds   # delta speed
+ 
+onevent ir_sensors
+
+	# proximity
+	proxFront = (prox[0]+prox[7])/2
+
+	# delta speed ds
+	call math.muldiv(ds, S_INIT, proxFront, P_THRESH)
+	
+	# right and left speed
+	speed.right = S_INIT - ds
+	speed.left = S_INIT - ds
+
+</node>
+
+
+</network>

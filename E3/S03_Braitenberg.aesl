@@ -1,0 +1,112 @@
+<!DOCTYPE aesl-source>
+<network>
+
+<!--				
+Description: Braitenberg vehicles: basic lover (epuck1), advanced lover (e-puck2)
+and explorer (e-puck3)
+
+The speed of the wheels for the love and explore behaviour is given by the 
+formula:
+   s = s0 + ds, where s:speed, s0: initial speed, ds: delta speed
+   ds = +-(p/p_t) * s0, where p: current proximity, p_t: proximity threshold
+
+Author: TODO
+-->
+
+<!--list of global events-->
+
+
+<!--list of constants-->
+<constant value="1500" name="P_THRESH"/>
+<constant value="600" name="S_INIT"/>
+
+
+<!--show keywords state-->
+<keywords flag="true"/>
+
+
+<!--node e-puck 2-->
+<node nodeId="2" name="e-puck 2">
+#-------------------------------------------------------------------------------				
+# Advanced love behaviour
+#-------------------------------------------------------------------------------
+
+var proxRight
+var proxLeft
+var ds   # delta speed
+
+onevent ir_sensors
+	# proximity
+	#---- TODO
+
+	# check which side is closer to obstacle
+	if proxRight > proxLeft then # turn left
+		# delta speed ds
+		#---- TODO
+		# right and left speed
+		#---- TODO
+	else # turn right
+		# delta speed ds
+		#---- TODO
+		# right and left speed
+		#---- TODO
+	end
+	
+</node>
+
+
+<!--node e-puck 3-->
+<node nodeId="3" name="e-puck 3">
+#-------------------------------------------------------------------------------				
+# Explore behaviour
+#-------------------------------------------------------------------------------
+
+var proxRight
+var proxLeft
+var ds   # delta speed
+
+onevent ir_sensors
+	# proximity
+	#---- TODO
+
+	# check which side is closer to obstacle
+	if proxRight > proxLeft then # turn left
+		# delta speed ds
+		#---- TODO
+		# right and left speed
+		#---- TODO
+	else # turn right
+		# delta speed ds
+		#---- TODO
+		# right and left speed
+		#---- TODO
+	end
+
+</node>
+
+
+<!--node e-puck 1-->
+<node nodeId="1" name="e-puck 1">
+#-------------------------------------------------------------------------------				
+# Basic love behaviour
+#-------------------------------------------------------------------------------
+
+var proxFront
+var ds   # delta speed
+ 
+onevent ir_sensors
+
+	# proximity
+	proxFront = (prox[0]+prox[7])/2
+
+	# delta speed ds
+	call math.muldiv(ds, S_INIT, proxFront, P_THRESH)
+	
+	# right and left speed
+	speed.right = S_INIT - ds
+	speed.left = S_INIT - ds
+
+</node>
+
+
+</network>

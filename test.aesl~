@@ -1,0 +1,31 @@
+<!DOCTYPE aesl-source>
+<network>
+
+
+<!--list of global events-->
+
+
+<!--list of constants-->
+
+
+<!--show keywords state-->
+<keywords flag="true"/>
+
+
+<!--node e-puck 1-->
+<node nodeId="1" name="e-puck 1">var counter = 0
+onevent ir_sensors
+	if counter &lt; 200 then
+		speed.left = 800
+		speed.right = 400
+	else
+		speed.left = 400
+		speed.right = 800
+	end
+	counter++
+	if  counter >= 400 then
+		counter = 0		
+	end</node>
+
+
+</network>

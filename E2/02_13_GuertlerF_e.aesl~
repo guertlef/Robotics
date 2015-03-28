@@ -1,0 +1,155 @@
+<!DOCTYPE aesl-source>
+<network>
+
+
+<!--list of global events-->
+<event size="0" name="stop"/>
+<event size="1" name="forward"/>
+<event size="1" name="backward"/>
+<event size="2" name="curve"/>
+
+
+<!--list of constants-->
+<constant value="400" name="SPEED_NORM"/>
+<constant value="0" name="SPEED_STOP"/>
+<constant value="30000" name="DELAY"/>
+
+
+<!--show keywords state-->
+<keywords flag="true"/>
+
+
+<!--node e-puck 1-->
+<node nodeId="1" name="e-puck 1">
+##########################################################
+#
+#	Robotics Project [SA 12] | University of Fribourg
+#		
+# 	Author:			Gürtler Fabienne
+# 	Created:     	28.02.2015
+# 	Last modified: 	02.03.2015
+#
+#	Description: 	implementation of events
+#
+##########################################################
+
+### Events ###
+onevent stop
+	speed.left = SPEED_STOP
+	speed.right = SPEED_STOP
+	
+onevent forward
+	speed.left = args[0]
+	speed.right = args[0]
+	
+onevent backward
+	speed.left = -args[0]
+	speed.right = -args[0]
+				
+onevent curve
+	speed.left = args[0]
+	speed.right = args[1]</node>
+
+
+<!--node e-puck 2-->
+<node nodeId="2" name="e-puck 2">
+##########################################################
+#
+#	Robotics Project [SA 12] | University of Fribourg
+#		
+# 	Author:			Gürtler Fabienne
+# 	Created:     	28.02.2015
+# 	Last modified: 	02.03.2015
+#
+#	Description: 	sends commands to e-puck1 and e-puck3
+#
+##########################################################
+
+var i
+var j
+
+var cal1	 = 05	# calibration correction for  90-degree turn
+var cal2	 = 10	# calibration correction for 180-degree turn
+
+# forward
+# step 1
+emit forward SPEED_NORM
+for i in 0:DELAY do end # wait before stopping movement
+emit stop
+
+for i in 0:DELAY do end # wait between movements
+
+# loop for step 5
+for j in 0:2 do
+	
+	# curved triangle
+	# step 2
+	emit curve [SPEED_NORM, SPEED_NORM/2 -cal1]
+	for i in 0:DELAY do end # wait before stopping movement
+	emit stop
+
+	for i in 0:DELAY do end # wait between movements
+
+	# step 3
+	emit backward SPEED_NORM
+	for i in 0:DELAY do end # wait before stopping movement
+	emit stop
+
+	for i in 0:DELAY do end # wait between movements
+
+	# step 4
+	emit curve [SPEED_NORM, SPEED_NORM/2 -cal1]
+	for i in 0:DELAY do end # wait before stopping movement
+	emit stop
+
+	for i in 0:DELAY do end # wait between movements
+
+	# 180-degree turn
+	emit curve [SPEED_NORM/2 +cal2, -SPEED_NORM/2 -cal2]
+	for i in 0:DELAY do end # wait before stopping movement
+	emit stop
+
+	for i in 0:DELAY do end # wait between movements
+	
+end
+
+# go to start
+emit backward SPEED_NORM
+for i in 0:DELAY do end # wait before stopping movement
+emit stop
+</node>
+
+
+<!--node e-puck 3-->
+<node nodeId="3" name="e-puck 3">
+##########################################################
+#
+#	Robotics Project [SA 12] | University of Fribourg
+#		
+# 	Author:			Gürtler Fabienne
+# 	Created:     	28.02.2015
+# 	Last modified: 	02.03.2015
+#
+#	Description: 	implementation of events
+#
+##########################################################
+
+### Events ###
+onevent stop
+	speed.left = SPEED_STOP
+	speed.right = SPEED_STOP
+	
+onevent forward
+	speed.left = args[0]
+	speed.right = args[0]
+	
+onevent backward
+	speed.left = -args[0]
+	speed.right = -args[0]
+				
+onevent curve
+	speed.left = args[1]
+	speed.right = args[0]</node>
+
+
+</network>
