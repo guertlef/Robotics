@@ -52,7 +52,7 @@ b=0
 g=0
 
 onevent camera
-	# calculation of mean colors taken from demo
+	# calculation of average colors, only uses pixels 28-32
 	for i in 0:4 do
 		camRed += cam.red[i+28]	
 	end
@@ -106,32 +106,5 @@ onevent ir_sensors
 		leds[2] = 1
 		leds[6] = 1
 	end
-	
-	# explorer behavior from series 3
-	# proximity
-	proxRight = (4*prox[0] + 2*prox[1] + prox[2])/7
-	proxLeft = (4*prox[7] + 2*prox[6] + prox[5])/7
-
-	# check which side is closer to obstacle
-	if proxRight > proxLeft then # turn left
-
-		# delta speed ds
-		call math.muldiv(ds, S_INIT, proxRight, P_THRESH)
-
-		# right and left speed
-	   	speed.right = S_INIT + ds
-	   	speed.left = S_INIT - ds
-
-	else # turn right
-
-		# delta speed ds
-		call math.muldiv(ds, S_INIT, proxLeft, P_THRESH)
-
-		# right and left speed
-		speed.right = S_INIT - ds
-		speed.left = S_INIT + ds
-
-	end </node>
-
-
+	</node>
 </network>
