@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.1415926-2.5-1.40.14 (TeX Live 2013/Debian) (format=pdflatex 2015.3.27)  31 MAR 2015 14:11
+This is pdfTeX, Version 3.1415926-2.5-1.40.14 (TeX Live 2013/Debian) (format=pdflatex 2015.3.27)  31 MAR 2015 17:22
 entering extended mode
  restricted \write18 enabled.
  %&-line parsing enabled.
@@ -293,24 +293,64 @@ Package pdftex.def Info: CamValuesPerc.png used on input line 29.
 [1{/var/lib/texmf/fonts/map/pdftex/updmap/pdftex.map}
 
  <./CamValuesPerc.png>]
-[2] (./06_13_GuertlerF_e.aux) ) 
+Underfull \hbox (badness 10000) in paragraph at lines 72--73
+
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 74--84
+
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 85--89
+
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 95--96
+
+ []
+
+[2]
+Underfull \hbox (badness 10000) in paragraph at lines 103--108
+
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 115--116
+
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 115--116
+
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 117--124
+
+ []
+
+[3] (./06_13_GuertlerF_e.aux) ) 
 Here is how much of TeX's memory you used:
- 3864 strings out of 494985
- 53772 string characters out of 6180356
+ 3867 strings out of 494985
+ 53811 string characters out of 6180356
  123910 words of memory out of 5000000
- 7056 multiletter control sequences out of 15000+600000
- 5304 words of font info for 20 fonts, out of 8000000 for 9000
+ 7058 multiletter control sequences out of 15000+600000
+ 5650 words of font info for 21 fonts, out of 8000000 for 9000
  36 hyphenation exceptions out of 8191
  38i,10n,43p,249b,233s stack positions out of 5000i,500n,10000p,200000b,80000s
 </usr/share/texlive/texmf-dist/fonts/type1/publi
 c/amsfonts/cm/cmbx12.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/amsf
 onts/cm/cmmi10.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/c
 m/cmr10.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmsy1
-0.pfb>
-Output written on 06_13_GuertlerF_e.pdf (2 pages, 64747 bytes).
+0.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmti10.pfb>
+
+Output written on 06_13_GuertlerF_e.pdf (3 pages, 87723 bytes).
 PDF statistics:
- 28 PDF objects out of 1000 (max. 8388607)
- 18 compressed objects within 1 object stream
+ 35 PDF objects out of 1000 (max. 8388607)
+ 23 compressed objects within 1 object stream
  0 named destinations out of 1000 (max. 500000)
  6 words of extra memory for PDF output out of 10000 (max. 10000000)
 

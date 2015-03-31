@@ -83,7 +83,7 @@ sub behaviorExpl 	# taken from series 3
 
 	end
 	
-sub behaviorLove		# implemented according to Braitenberg
+sub behaviorLove
 	# proximity
 	proxLeft = (3*prox[0] + prox[1])/4
 	proxRight = (3*prox[7] + prox[6])/4
