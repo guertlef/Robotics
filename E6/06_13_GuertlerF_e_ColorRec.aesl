@@ -27,8 +27,9 @@
 # 	Created:     	31.03.2015
 # 	Last modified: 	31.03.2015
 #
-#	Description: 	Explorer behaviour with visual feedback
-#					of color recognition
+#	Description: 	Approaches Red object.
+#					When e-puck sees Red -> LOVE behavior
+#					otherwise EXPLORER behavior
 #
 ##########################################################
 
@@ -47,9 +48,9 @@ var r
 var b
 var g
 
-r=0
+r=5
 b=0
-g=0
+g=2
 
 onevent camera
 	# calculation of average colors, only uses pixels 28-32
@@ -68,15 +69,16 @@ onevent camera
 	end
 	camGreen /= 4
 			
-	if 2*camBlue -r &lt;= camRed and camRed &lt;= 4*camBlue +r  and
-	   2*camGreen -r &lt;= camRed and camRed &lt;= 3*camGreen +r then
+	if 2*(camBlue -r) &lt;= camRed and #camRed &lt;= 4*camBlue and
+	   2*(camGreen -r) &lt;= camRed #and camRed &lt;= 3*camGreen 
+	   then
 		color = RED
 		
-	elseif camRed -g &lt;= camGreen and 7*camBlue -g &lt;= 6*camGreen and
-		   4*camGreen &lt;= 9*camBlue +5*g then
+	elseif camRed -g &lt;= camGreen and 7*camBlue &lt;= 6*(camGreen +g) and
+		   4*(camGreen +g) &lt;= 9*camBlue then
 			color = GREEN
 		
-	elseif 7*camRed -b &lt;= 6*camBlue and 4*camBlue &lt;= 9*camRed +b and
+	elseif 7*camRed &lt;= 6*(camBlue +b) and 4*(camBlue -b) &lt;= 9*camRed and
 		   camGreen -b &lt;= camBlue then
 			color = BLUE
 		
