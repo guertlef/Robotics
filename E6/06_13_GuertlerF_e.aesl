@@ -24,44 +24,61 @@
 #	Robotics Project [SA 12] | University of Fribourg
 #		
 # 	Author:			Gürtler Fabienne
-# 	Created:     	23.03.2015
-# 	Last modified: 	24.03.2015
+# 	Created:     	31.03.2015
+# 	Last modified: 	31.03.2015
 #
 #	Description: 	Explorer behaviour with visual feedback
 #					of color recognition
 #
 ##########################################################
 
-var meanRed
-var meanGreen
-var meanBlue
-var minRed
-var minGreen
-var minBlue
-var maxRed
-var maxGreen
-var maxBlue
+var camRed = 0
+var camBlue = 0
+var camGreen = 0
+var i
+
 
 var color = NO_COLOR
 
 var proxRight
 var proxLeft
 var ds   # delta speed
+var r
+var b
+var g
+
+r=0
+b=0
+g=0
 
 onevent camera
 	# calculation of mean colors taken from demo
-	call math.stat(cam.red, minRed, maxRed, meanRed)
-	call math.stat(cam.green, minGreen, maxGreen, meanGreen)
-	call math.stat(cam.blue, minBlue, maxBlue, meanBlue)
+	for i in 0:4 do
+		camRed += cam.red[i+28]	
+	end
+	camRed /= 4
+
+	for i in 0:4 do
+		camBlue += cam.blue[i+28]	
+	end
+	camBlue /= 4
 	
-	if meanRed > 24 and meanBlue &lt; 23 and meanGreen &lt; 23 then
+	for i in 0:4 do
+		camGreen += cam.green[i+28]	
+	end
+	camGreen /= 4
+			
+	if 2*camBlue -r &lt;= camRed and camRed &lt;= 4*camBlue +r  and
+	   2*camGreen -r &lt;= camRed and camRed &lt;= 3*camGreen +r then
 		color = RED
 		
-	elseif meanRed &lt; 22 and meanBlue > 19 and meanGreen &lt; 22 then
-		color = BLUE
+	elseif camRed -g &lt;= camGreen and 7*camBlue -g &lt;= 6*camGreen and
+		   4*camGreen &lt;= 9*camBlue +5*g then
+			color = GREEN
 		
-	elseif meanRed &lt; 20 and meanBlue &lt; 20 and meanGreen > 16 then
-		color = GREEN
+	elseif 7*camRed -b &lt;= 6*camBlue and 4*camBlue &lt;= 9*camRed +b and
+		   camGreen -b &lt;= camBlue then
+			color = BLUE
 		
 	else
 		color = NO_COLOR
@@ -114,7 +131,7 @@ onevent ir_sensors
 		speed.right = S_INIT - ds
 		speed.left = S_INIT + ds
 
-	end</node>
+	end </node>
 
 
 </network>

@@ -1,0 +1,172 @@
+<!DOCTYPE aesl-source>
+<network>
+
+
+<!--list of global events-->
+
+
+<!--list of constants-->
+<constant value="0" name="NO_COLOR"/>
+<constant value="1" name="RED"/>
+<constant value="2" name="GREEN"/>
+<constant value="3" name="BLUE"/>
+<constant value="4" name="EXPLORER"/>
+<constant value="5" name="LOVE"/>
+<constant value="800" name="P_THRESH"/>
+<constant value="400" name="S_INIT"/>
+
+
+<!--show keywords state-->
+<keywords flag="true"/>
+
+
+<!--node e-puck3-->
+<node nodeId="4" name="e-puck3">##########################################################
+#
+#	Robotics Project [SA 12] | University of Fribourg
+#		
+# 	Author:			Gürtler Fabienne
+# 	Created:     	31.03.2015
+# 	Last modified: 	31.03.2015
+#
+#	Description: 	Explorer behaviour with visual feedback
+#					of color recognition
+#
+##########################################################
+
+var camRed = 0
+var camBlue = 0
+var camGreen = 0
+var i
+
+var behavior
+
+var color = NO_COLOR
+
+var proxRight
+var proxLeft
+var ds
+var ds_left
+var ds_right
+var r
+var b
+var g
+
+r=5
+b=0
+g=2
+
+	 
+sub behaviorExpl
+	# proximity
+	proxRight = (4*prox[0] + 2*prox[1] + prox[2])/7
+	proxLeft = (4*prox[7] + 2*prox[6] + prox[5])/7
+
+	# check which side is closer to obstacle
+	if proxRight > proxLeft then # turn left
+
+		# delta speed ds
+		call math.muldiv(ds, S_INIT, proxRight, P_THRESH)
+
+		# right and left speed
+	   	speed.right = S_INIT + ds
+	   	speed.left = S_INIT - ds
+
+	else # turn right
+
+		# delta speed ds
+		call math.muldiv(ds, S_INIT, proxLeft, P_THRESH)
+
+		# right and left speed
+		speed.right = S_INIT - ds
+		speed.left = S_INIT + ds
+
+	end
+	
+sub behaviorLove
+	# proximity
+	proxLeft = (3*prox[0] + prox[1])/4
+	proxRight = (3*prox[7] + prox[6])/4
+
+	# delta speed ds
+	call math.muldiv(ds_left,S_INIT,proxLeft,P_THRESH)
+	call math.muldiv(ds_right,S_INIT,proxRight,P_THRESH)	
+	
+	# right and left speed
+	speed.right = S_INIT - ds_left
+	speed.left = S_INIT - ds_right
+
+onevent camera
+	# calculation of colors, only takes center pixels.
+	for i in 0:4 do
+		camRed += cam.red[i+28]	
+	end
+	camRed /= 4
+
+	for i in 0:4 do
+		camBlue += cam.blue[i+28]	
+	end
+	camBlue /= 4
+	
+	for i in 0:4 do
+		camGreen += cam.green[i+28]	
+	end
+	camGreen /= 4
+			
+	if 2*(camBlue -r) &lt;= camRed and #camRed &lt;= 4*camBlue and
+	   2*(camGreen -r) &lt;= camRed #and camRed &lt;= 3*camGreen 
+	   then
+		color = RED
+		
+	elseif camRed -g &lt;= camGreen and 7*camBlue &lt;= 6*(camGreen +g) and
+		   4*(camGreen +g) &lt;= 9*camBlue then
+			color = GREEN
+		
+	elseif 7*camRed &lt;= 6*(camBlue +b) and 4*(camBlue -b) &lt;= 9*camRed and
+		   camGreen -b &lt;= camBlue then
+			color = BLUE
+		
+	else
+		color = NO_COLOR
+	end
+	
+onevent ir_sensors
+	# visual feedback
+	if color == NO_COLOR then
+		leds[4] = 0
+		leds[2] = 0
+		leds[6] = 0
+		behavior = EXPLORER
+	
+	elseif color == RED then
+		leds[4] = 1
+		leds[2] = 0
+		leds[6] = 0
+	
+		behavior = LOVE
+		
+	elseif color == BLUE then
+		leds[4] = 0
+		leds[2] = 1
+		leds[6] = 1
+		behavior = EXPLORER
+		
+	elseif color == GREEN then
+		leds[4] = 1
+		leds[2] = 1
+		leds[6] = 1
+		behavior = EXPLORER
+	end
+	# behavior
+	if behavior == EXPLORER then
+		callsub behaviorExpl	
+	
+	elseif behavior == LOVE then
+		callsub behaviorLove
+	end
+	
+
+</node>
+
+
+</network>
