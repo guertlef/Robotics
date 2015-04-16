@@ -2,3 +2,11 @@ e-puck 1:
 			searchRB ---(emit foundB)---> wait    ---(rcve foundR)---> passDoor ---(emit passed)---> ? 
 																											
 e-puck 2:	searchRB ---(rcve foundB)---> searchR ---(emit foundR)---> wait		---(rcve passed)---> ?
+
+implementation ideas:
+
+variables: doorFound, keyFound
+events: search(item), release(item)
+State: WAIT, PASS
+		
+			
