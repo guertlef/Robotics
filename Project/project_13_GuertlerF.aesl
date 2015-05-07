@@ -3,93 +3,96 @@
 
 
 <!--list of global events-->
-<event size="1" name="search"/>
-<event size="1" name="release"/>
-<event size="0" name="foundDoor"/>
-<event size="0" name="foundKey"/>
+<event size="0" name="foundBlue"/>
+<event size="0" name="foundRed"/>
+<event size="0" name="passed"/>
 
 
 <!--list of constants-->
-<constant value="0" name="WAIT"/>
-<constant value="1" name="RB"/>
-<constant value="2" name="R"/>
-<constant value="3" name="B"/>
-<constant value="4" name="PASS"/>
-<constant value="10" name="TRUE"/>
-<constant value="20" name="FALSE"/>
+<constant value="1" name="TRUE"/>
+<constant value="0" name="FALSE"/>
+<constant value="2" name="RED"/>
+<constant value="3" name="BLUE"/>
+<constant value="4" name="NOCOLOR"/>
+<constant value="5" name="SEARCHRB"/>
+<constant value="6" name="SEARCHR"/>
+<constant value="7" name="SEARCHB"/>
+<constant value="8" name="WAIT"/>
+<constant value="10" name="PASS"/>
 
 
 <!--show keywords state-->
 <keywords flag="true"/>
 
 
-<!--node e-puck 1-->
-<node nodeId="1" name="e-puck 1">var doorFound = FALSE
-var keyFound = FALSE
-var state = RB
+<!--node e-puck 3-->
+<node nodeId="3" name="e-puck 3">var redFound = FALSE
+var blueFound = FALSE
+var color = NOCOLOR
+
+var state = WAIT
 
 sub searchRB
-	# search for door and key
-	# before emitting event found(Door/Key)
-	# check if door and key were already found.
-	
-	while doorFound == TRUE and keyFound == TRUE do
-		state = WAIT	
-	end
-	
-	# if item found is door 
-	emit foundDoor
-	
-	# if item found is key 
-	emit foundKey
+# TODO: implement search-behaviors
+
+sub searchR
 
 sub searchB
-	# find door 
-	while doorFound == TRUE and keyFound == TRUE do
-		state = WAIT	
-	end
-	
-	emit foundDoor
-	
+
 sub wait
 	speed.left = 0
 	speed.right = 0
 
-onevent search
-	if args[0]== RB then
-		callsub searchRB
-	elseif args[0] == R then
-		callsub searchB	
-	end
-	
-onevent foundDoor
-	if keyFound == TRUE then
-		state = PASS
-	else emit search R
-	end
-	
-onevent foundKey
-	state = WAIT
-	if doorFound != TRUE then
-		emit search B	
-	end
-	
-onevent release
-	if args[0] == RB then
-		emit search RB
-		state = RB
-	end
-	
+sub passDoor
+# TODO: implement pass-door
 
-</node>
+
+# nothing found yet
+if redFound == FALSE and blueFound == FALSE then
+	state = SEARCHRB
+	
+# someone else found blue -> search red
+elseif redFound == FALSE and blueFound == TRUE and 
+       color == NOCOLOR then
+	state = SEARCHR
+	
+# found blue -> wait infront of it
+elseif redFound == FALSE and blueFound == TRUE and
+	   color == BLUE then
+	state = WAIT
+	
+# someone else found red 
+elseif redFound == TRUE and blueFound == FALSE and
+	   color == NOCOLOR then
+	state = SEARCHB
+	
+# found red -> wait
+elseif redFound == TRUE and blueFound == FALSE and
+	   color == RED then
+	state = WAIT
+	
+# both colors were found -> wait
+elseif redFound == TRUE and blueFound == TRUE and
+	   color != BLUE then
+	state = WAIT
+	
+# both colors were found -> pass door
+elseif redFound == TRUE and blueFound == TRUE and
+	   color == BLUE then
+	state = PASS
+
+# should not happed, but to be sure:	
+else state = WAIT
+
+end</node>
+
+
+<!--node e-puck 1-->
+<node nodeId="1" name="e-puck 1"></node>
 
 
 <!--node e-puck 2-->
 <node nodeId="2" name="e-puck 2"></node>
-
-
-<!--node e-puck 3-->
-<node nodeId="3" name="e-puck 3"></node>
 
 
 </network>

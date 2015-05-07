@@ -1,0 +1,202 @@
+%&pdflatex
+\documentclass[12pt,a4paper]{article}
+\usepackage[left=1in,right=1in, bottom=1in]{geometry}
+\usepackage[utf8]{inputenc}
+\usepackage[english]{babel}			%other options: frenchb,german
+\usepackage[pdftex]{graphicx}
+\usepackage{moreverb}
+\usepackage[hidelinks]{hyperref}
+\usepackage{titling}
+\usepackage{caption}
+\usepackage{listings}
+
+% move title to top of page
+\setlength{\droptitle}{-10em}
+
+% remove additional space between tables and their captions
+\captionsetup[table]{skip=0pt}
+\graphicspath{{figures/}}
+
+% title setup
+\title{Robotics Challenge 2015}
+\date{May 28, 2015}
+\author{
+	Firstname \textsc{Lastname}\\
+	IN.2022 Robotics, BSc Course, 2nd Sem.\\
+	University of Fribourg \\
+	\href{mailto:firstname.lastname@unifr.ch}{firstname.lastname@unifr.ch}
+}
+
+% setup page
+\sloppy
+\pagenumbering{roman}
+\pagestyle{plain}
+\pagenumbering{arabic}
+\pagestyle{headings}
+
+\begin{document}
+%################### Report Start #####################################
+\maketitle
+
+\begin{abstract}
+\noindent Brief description of the content (5-10 lines). Helps people decide whether the report is relevant for them or not. Usually written at the end.
+\end{abstract}
+~~~\indent \textbf{Keywords.} add, keywords, for, indexing
+
+%------------------- TODO: Remove Prolog Start -------------------------------
+\section*{Prologue} % the actual report doesn't need a prologue
+This document is a \LaTeX{} template for the Robotics Challenge. Even though it is mandatory to use \LaTeX{} for this report, the template can be chosen individually. There are other templates available from the (Association for Computer Machinery) ACM\footnote{See \href{https://www.acm.org/sigs/publications/proceedings-templates}{https://www.acm.org/sigs/publications/proceedings-templates}.} (Association for Computer Machinery) and from the IEEE\footnote{See \href{http://www.ieee.org/conferences_events/conferences/publishing/templates.html}{http://www.ieee.org/conferences\_events/conferences/publishing/templates.html}.} (Institute of Electrical and Electronics Engineers). Note that those templates are well documented and worth considering for this report.\\
+\subsection*{Characteristics of a technical report}
+The goal of a technical report is to transfer the authors knowledge. This requires that the report is written in an objective and informative style, which must also be reflected in the structure. Starting with the big picture in the abstract, the report gets more and more detailed, guiding the reader along the way. Once everything is discussed in detail and the results are validated, the content is finally synthesized.\\
+An important part of scientific writing is citing all external sources in a clear, unambiguous manner. Failing to do so is called plagiarism. It is not only unethical, it will most likely result in sanctions.\\
+A huge literature exists about scientific writing. A good entry is given by \cite{Writing}.
+%------------------- TODO: Remove Prolog End -------------------------------
+
+\section*{Introduction}
+Objectives of this project and brief description of the problem at hand, the achieved solution and results.
+
+\section{Problem statement}
+Description of the challenge and the environment (e-puck robots, ASEBA suite, and lab).
+
+\section{Solution Strategy} \label{sec:solStrategy}
+Description of the approach chosen to solve the challenge.
+
+\section{Implementation}
+Description of how the solution strategy in Section \ref{sec:solStrategy} was implemented. Only short excerpts of code or pseudo code should be used here. Longer excerpts can be included in \ref{app:sourceCode}.
+
+\section{Validation}
+Description of how the solution turned out and what problems were encountered. Since this report is accompanied by a short video, it can be referenced to illustrate the result.
+
+\section*{Conclusion}
+Synthesis of the paper and outlook for further work.
+
+\section*{Personal Comments}
+Feedback to the course and project (what you liked, what you didn't like, what you learned, ...).
+
+%------------------- Bibliography Start -------------------------------
+\begin{thebibliography}{20}
+\bibitem{Writing}
+Justin Zobel.											% author
+\textit{Writing for Computer Science}, 2nd edition.		% title (italics), edition
+Springer-Verlag, London, 2004, 275 pages.				% editor, date, other info
+
+% book source
+\bibitem{Braitenberg} % cited with '\cite{Braitenberg}'
+Valentino Braitenberg.									% author (Firstname Lastname, Firstname2 Lastname2, ...)
+\textit{Vehicles: Experiments in Synthetic Psychology}.	% title (italics)
+MIT Press, 1986.										% editor, date
+
+% web source
+\bibitem{AsebaManual} % cited with '\cite{AsebaManual}'
+														% author (sometimes not available)
+\textit{Aseba User Manual}.										% title (italics)
+https://aseba.wikidot.com/en:asebausermanual.			% url
+Last visited: 29.04.15.									% date
+\end{thebibliography}
+%------------------- Bibliography End -------------------------------
+%################### Report End #####################################
+%################### Appendix Start #####################################
+\appendix
+\renewcommand{\thesection}{Appendix \Alph{section}}
+\renewcommand{\thesubsection}{\Alph{section}.\arabic{subsection}}
+
+\clearpage
+
+\section{Experimental Results}
+Place to list the gathered data.
+
+\section{Source Code} \label{app:sourceCode}
+Place to list source code.
+
+\subsection{Advanced Love Behavior} \label{app:advLove} % referenced with '\ref{app:code}'
+The code below shows an e-puck implementing the advanced love behavior.
+\lstinputlisting[basicstyle=\ttfamily, frame=single, tabsize=4, numbers=left, firstline=29, lastline=57]{code/code.aesl}
+
+
+\subsection{Explore Behavior} \label{app:expl} % referenced with '\ref{app:code}'
+The code below shows an e-puck implementing the explore behavior.
+\lstinputlisting[basicstyle=\ttfamily, frame=single, tabsize=4, numbers=left, firstline=60, lastline=88]{code/code.aesl}
+
+%------------------- TODO: Remove Examples Start -------------------------------
+\section{\LaTeX{} Examples} % only for demonstration, remove this section
+This section shows some common uses of \LaTeX{} features.
+\subsection{Images}
+Example of how to include an image can be seen in Figure \ref{fig:graphicfile}. All figures must be referenced somewhere in the report.
+\begin{figure}[htb]
+\begin{center}
+\includegraphics[width=7cm]{garfield}
+\caption{Including an image.}
+\label{fig:graphicfile} % no file ending
+\end{center}
+\end{figure}
+
+\subsection{Tables}
+Example of how to include a table can be seen in Figure \ref{fig:someTable}. All figures must be referenced somewhere in the report.
+\begin{figure}[h]
+\begin{center}
+\begin{tabular}{|c|c|}
+\hline
+\textbf{Title 1} & \textbf{Title 2} \\
+\hline
+item 11	&	item 12	\\
+\hline
+item 21	&	item 22	\\
+\hline
+\end{tabular}
+\end{center}
+\caption{Table with caption.}
+\label{fig:someTable}
+\end{figure}
+
+\subsection{Listings}
+Example of how to include listing can be seen in Figure \ref{fig:listing1} and Figure \ref{fig:listing2}. All figures must be referenced somewhere in the report.
+\begin{figure}
+\lstinputlisting[basicstyle=\ttfamily, frame=single, tabsize=4, numbers=left, breaklines=true, firstline=20, lastline=22]{code/code.aesl}
+\caption{Listing included from file.}
+\label{fig:listing1}
+\end{figure}
+\begin{figure}
+\begin{lstlisting}[basicstyle=\ttfamily, frame=single, tabsize=4, numbers=left]
+var v [3]
+onevent ir_sensors
+	ground.get_values(v)
+\end{lstlisting}
+\caption{Listing within \LaTeX{}.}
+\label{fig:listing2}
+\end{figure}
+
+\subsection{Font Style and Text Size}
+The font style may be modified: \textbf{bold}, \textit{italic}, \emph{Emphasis}, \textsc{Capitals}, \verb|verbatim|, etc.\\
+The text size can be changed: \tiny tiny, \small small, \large large, \huge huge, \normalsize etc.
+
+\subsection{Enumerations and Other Lists}
+Enumerations are easy, there is the
+\texttt{enumerate} environment:
+%
+\begin{enumerate}
+  \item First item
+  \item Second item
+  \item Third item
+\end{enumerate}
+
+\noindent For lists, there is the
+\texttt{itemize} environment:
+%
+\begin{itemize}
+  \item First item
+  \item Second item
+  \item Third item
+\end{itemize}
+
+\noindent For definitions lists, there is the \texttt{description} environment:
+\begin{description}
+\item[First term] -- Description of the first term
+\item[Second term] -- Description of the second term
+\end{description}
+
+\subsection{Quotations and References}
+Books and other documentation can be referenced as \cite{Braitenberg} and
+websites as \cite{AsebaManual}.
+%------------------- TODO: Remove Examples End -------------------------------
+%################### Appendix End #####################################
+\end{document}
