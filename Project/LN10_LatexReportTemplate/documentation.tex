@@ -21,10 +21,10 @@
 \title{Robotics Challenge 2015}
 \date{May 28, 2015}
 \author{
-	Firstname \textsc{Lastname}\\
+	Fabienne \textsc{Guertler}\\
 	IN.2022 Robotics, BSc Course, 2nd Sem.\\
 	University of Fribourg \\
-	\href{mailto:firstname.lastname@unifr.ch}{firstname.lastname@unifr.ch}
+	\href{mailto:fabienne.guertler@unifr.ch}{fabienne.guertler@unifr.ch}
 }
 
 % setup page
@@ -47,7 +47,29 @@
 Objectives of this project and brief description of the problem at hand, the achieved solution and results.
 
 \section{Problem statement}
-Description of the challenge and the environment (e-puck robots, ASEBA suite, and lab).
+%Description of the challenge and the environment (e-puck robots, ASEBA suite, and lab).
+There are 3 e-pucks in an arena. In this arena there are 2 blue doors and 4 red switches. To open a door a switch must be pressed, meaning to pass through a door two e-pucks have to work together. One finds either the door or the switch and waits in front of it while the other searches the missing component. Once both the door and the switch have been found the door opens and the e-puck can pass. Another requirement for the challenge is that all e-pucks must have the same code, except for calibration values. Before I begin presenting one of the many possible solution strategies I'll present the e-puck and the arena in detail.
+
+\paragraph{E-puck}
+The Ecole Polytechnique Fédérale de Lausanne started the e-puck project with the main goal to develop a miniature mobile robot for educational purposes. 
+\begin{figure}[h!]
+\begin{center}
+\includegraphics[width = 5cm]{images/epuck-look.jpg}
+\caption{E-puck}
+\label{fig:epuck}
+\end{center}
+\end{figure}
+
+The design of the e-puck is based on desktop size and flexibility. By default it comes with sound sensors, a 3D accelerometer, 8 proximity sensors and a camera. It is possible to extend the e-puck with more hardware like a Color LED Communication Turret, groundsensors, magnetic wheels and more.
+
+\begin{figure}[h!]
+\begin{center}
+\includegraphics[scale=0.5]{images/epuck-concept.png}
+\caption{Mechanical structure}
+\label{fig:epuck structure}
+\end{center}
+\end{figure} 
+The structure is based on one single part to keep the desing simple and elegant. This basic part has a diameter of 7 cm and supports the motor, the circuit and the battery. The e-puck uses a miniature stepper motor with gear reduction and the wheels have a diameter of 4,1 cm.
 
 \section{Solution Strategy} \label{sec:solStrategy}
 Description of the approach chosen to solve the challenge.
