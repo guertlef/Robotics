@@ -21,7 +21,7 @@
 \title{Robotics Challenge 2015}
 \date{May 28, 2015}
 \author{
-	Fabienne \textsc{Guertler}\\
+	Fabienne \textsc{Gürtler}\\
 	IN.2022 Robotics, BSc Course, 2nd Sem.\\
 	University of Fribourg \\
 	\href{mailto:fabienne.guertler@unifr.ch}{fabienne.guertler@unifr.ch}
@@ -60,7 +60,7 @@ The Ecole Polytechnique Fédérale de Lausanne started the e-puck project with t
 \end{center}
 \end{figure}
 
-The design of the e-puck is based on desktop size and flexibility. By default it comes with sound sensors, a 3D accelerometer, 8 proximity sensors and a camera. It is possible to extend the e-puck with more hardware like a Color LED Communication Turret, groundsensors, magnetic wheels and more.
+The design of the e-puck is based on desktop size and flexibility. By default it comes with sound sensors, a 3D accelerometer, 8 proximity sensors and a camera. It is possible to extend the e-puck with more hardware like a Color LED Communication Turret, ground sensors, magnetic wheels and more. For this project we used e-pucks with ground sensors. The e-pucks communicate via Bluetooth. A e-puck is a event-based robot, it can both receive and emit events.
 
 \begin{figure}[h!]
 \begin{center}
@@ -69,10 +69,35 @@ The design of the e-puck is based on desktop size and flexibility. By default it
 \label{fig:epuck structure}
 \end{center}
 \end{figure} 
-The structure is based on one single part to keep the desing simple and elegant. This basic part has a diameter of 7 cm and supports the motor, the circuit and the battery. The e-puck uses a miniature stepper motor with gear reduction and the wheels have a diameter of 4,1 cm.
+The structure is based on one single part to keep the desing simple and elegant. This basic part has a diameter of 7 cm and supports the motor, the circuit and the battery. The e-puck uses a miniature stepper motor with gear reduction and the wheels have a diameter of 4,1 cm. 
+
+\paragraph{Arena}
+The arena is a 80cm x 160cm zone divided into two subspaces of roughly the same area. Both the floor and the walls are white. In the area there are the following randomly placed objects:
+\begin{itemize}
+	\item 2 blue doors, equipped with black stripes on the floor
+	\item 4 red switches, two per subspace
+	\item three epucks
+\end{itemize}
+
+\paragraph{Software}
+For the completion of the project we used the help of two programs, Aseba Studio and Aseba Playground.\\
+Aseba Playground simulates the arena, enabling us to test the robots behaviour virtually before trying to program the real robots.\\
+Aseba Studio ...TODO
+
 
 \section{Solution Strategy} \label{sec:solStrategy}
-Description of the approach chosen to solve the challenge.
+%Description of the approach chosen to solve the challenge.
+The principle of our solution is to manage the e-puck's behaviour with the three variables \textit{redFound, blueFound} and \textit{color}. 
+
+\begin{figure}[h!]
+\begin{center}
+\includegraphics[scale=0.5]{images/behaviourCode.png}
+\caption{Coding for e-puck behaviour}
+\label{fig:behaviour code}
+\end{center}
+\end{figure}
+
+
 
 \section{Implementation}
 Description of how the solution strategy in Section \ref{sec:solStrategy} was implemented. Only short excerpts of code or pseudo code should be used here. Longer excerpts can be included in \ref{app:sourceCode}.
