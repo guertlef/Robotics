@@ -1,0 +1,1271 @@
+<!DOCTYPE aesl-source>
+<network>
+
+
+<!--list of global events-->
+<event size="0" name="foundBlue"/>
+<event size="0" name="foundRed"/>
+<event size="0" name="passed"/>
+<event size="0" name="foundDoor"/>
+<event size="0" name="victory"/>
+
+
+<!--list of constants-->
+<constant value="0" name="FALSE"/>
+<constant value="1" name="TRUE"/>
+<constant value="2" name="RED"/>
+<constant value="3" name="BLUE"/>
+<constant value="4" name="NOCOLOR"/>
+<constant value="5" name="SEARCHRB"/>
+<constant value="6" name="SEARCHR"/>
+<constant value="7" name="SEARCHB"/>
+<constant value="8" name="WAIT"/>
+<constant value="9" name="PASS"/>
+<constant value="400" name="SPEED_NORM"/>
+<constant value="400" name="P_THRESH"/>
+<constant value="500" name="P_THRESH_LOVE"/>
+<constant value="10" name="VICTORY"/>
+<constant value="99" name="DANCE"/>
+
+
+<!--show keywords state-->
+<keywords flag="true"/>
+
+
+<!--node e-puck2-->
+<node nodeId="3" name="e-puck2">
+# color recognition
+var camRed = 0
+var camBlue = 0
+var camGreen = 0
+
+# counters
+var i
+var j = 0
+
+#calibration
+var r = 7
+var b = 0
+var g = 2
+var w = -5
+
+# proximity
+var proxRight = 0
+var proxLeft = 0
+var proxTotal = 0
+var ds
+var ds_left
+var ds_right
+
+# ground sensor
+var v[3]
+
+# controllers
+var redFound = FALSE
+var blueFound = FALSE
+var camColor = NOCOLOR
+var color = NOCOLOR
+var groundCounter = 0
+var points = 0
+var gameOver = FALSE
+var turnAround = FALSE
+var inPosition = FALSE
+var state = WAIT
+
+#############################################################	
+sub wait
+	speed.left = 0
+	speed.right = 0
+	
+sub advancedLover # code from sample solution
+	# proximity
+	proxRight = (prox[0] + 3*prox[1] + prox[2])/5
+	proxLeft = (prox[7] + 3*prox[6] + prox[5])/5
+
+	# check which side is closer to obstacle
+	if proxRight > proxLeft then # turn left
+
+		# delta speed ds
+		call math.muldiv(ds, SPEED_NORM, proxRight, P_THRESH)
+
+		# right and left speed
+		speed.right = ds
+	   	speed.left = SPEED_NORM - ds
+
+	else # turn right
+
+		# delta speed ds
+		call math.muldiv(ds, SPEED_NORM, proxLeft, P_THRESH)
+
+		# right and left speed
+		speed.right = SPEED_NORM - ds
+	   	speed.left = ds
+	end
+
+sub positionAtDoor
+	call ground.get_values(v)
+	
+	# at least one of the sensors on line: e-puck in position
+	if not(v[0] < -50 and v[0] > -75) or 
+	   not(v[2] < -50 and v[2] > -75) then
+		speed.left = 0
+		speed.right = 0
+		inPosition = TRUE
+		emit foundDoor
+	# follow wall
+	else
+		callsub advancedLover
+	end
+
+sub love # implemented according to Braitenberg
+	# proximity
+	proxLeft = (3*prox[0] + prox[1])/4
+	proxRight = (3*prox[7] + prox[6])/4
+	call math.add(proxTotal, proxLeft,proxRight)
+
+	# delta speed ds
+	call math.muldiv(ds_left,SPEED_NORM,proxLeft,P_THRESH)
+	call math.muldiv(ds_right,SPEED_NORM,proxRight,P_THRESH)	
+	
+	# approach object, stop when in certain distance
+	if proxTotal < P_THRESH_LOVE then	
+	speed.right = SPEED_NORM - ds_left
+	speed.left = SPEED_NORM - ds_right
+	
+	# only emit found when object wasn't found already
+	else
+		if camColor == BLUE and blueFound == FALSE then
+			color = BLUE
+			blueFound = TRUE
+			emit foundBlue
+			
+		elseif camColor == RED and redFound == FALSE then
+			color = RED
+			redFound = TRUE
+			emit foundRed
+		end
+		callsub wait
+	end
+	
+sub explore	# from sample solution
+	# proximity
+	proxRight = (4*prox[0] + 2*prox[1] + prox[2])/7
+	proxLeft = (4*prox[7] + 2*prox[6] + prox[5])/7
+
+	# check which side is closer to obstacle
+	if proxRight > proxLeft then # turn left
+
+		# delta speed ds
+		call math.muldiv(ds, SPEED_NORM, proxRight, P_THRESH)
+
+		# right and left speed
+	   	speed.right = SPEED_NORM + ds
+	   	speed.left = SPEED_NORM - ds
+
+	else # turn right
+
+		# delta speed ds
+		call math.muldiv(ds, SPEED_NORM, proxLeft, P_THRESH)
+
+		# right and left speed
+		speed.right = SPEED_NORM - ds
+		speed.left = SPEED_NORM + ds
+
+	end
+
+sub searchRB
+	if camColor == RED then
+		callsub love
+
+	elseif camColor == BLUE then
+		callsub love
+		
+	else
+		callsub explore
+	end
+
+sub searchR
+	if camColor == RED then
+		callsub love
+		
+	else callsub explore 		
+	end
+
+sub searchB
+	if camColor == BLUE then
+		callsub love
+		
+	else callsub explore
+	end
+
+sub followLine
+	call ground.get_values(v)
+	# 0 & 2 not on line
+	if (v[0] < -55 and v[0] > -70) and 
+	   (v[2] < -55 and v[2] > -70) then
+		groundCounter++
+	
+	# 0 not on line
+	elseif (v[0] < -55 and v[0] > -70) then
+		speed.left = 200
+		speed.right = 70
+		groundCounter = 0
+
+	# 2 not on line
+	elseif (v[2] < -55 and v[2] > -70) then
+		speed.left = 70
+		speed.right = 200
+		groundCounter = 0
+
+	else # both on line
+		speed.left = 200
+		speed.right = 200
+	end
+	
+	if groundCounter > 50 then
+		blueFound = FALSE
+		redFound = FALSE
+		color = NOCOLOR
+		j = 0	
+		inPosition = FALSE
+		groundCounter = 0
+		emit passed	
+		points+=2
+		if points >= 7 then
+			emit victory
+		end
+	end
+	
+sub passDoor
+	if j > 100 then
+		if inPosition == TRUE then
+			callsub followLine	
+		else
+			callsub positionAtDoor			
+		end
+	else 
+		callsub wait
+	end
+	
+sub dance
+	# if winner -> blink
+	if points >= 7 then
+		if j%5 == 0 then
+			for i in 0:7 do
+				leds[i] = 1
+			end
+		else
+			for i in 0:7 do
+				leds[i] = 0	
+			end
+		end
+	end
+	
+	speed.left = SPEED_NORM
+	speed.right = -SPEED_NORM
+#############################################################
+onevent camera
+	# calculation of colors, only takes center pixels.
+	for i in 0:5 do
+		camRed += cam.red[i+28]	
+	end
+	camRed /= 6
+
+	for i in 0:5 do
+		camBlue += cam.blue[i+28]	
+	end
+	camBlue /= 6
+	
+	for i in 0:5 do
+		camGreen += cam.green[i+28]	
+	end
+	camGreen /= 6
+	
+	if camBlue > 30+w and camGreen > 30+w and 
+	   camRed > 30+w then
+		camColor = NOCOLOR
+		
+	elseif 2*(camBlue -r) <= camRed and 
+	       2*(camGreen -r) <= camRed then
+		camColor = RED
+
+	elseif 7*camRed <= 6*(camBlue +b) and 
+	       3*(camBlue -b) <= 9*camRed and 
+	       camGreen -b <= camBlue and not(camBlue > 20 and
+	       camRed > 20 and camGreen > 20) then
+		camColor = BLUE
+		
+	else
+		camColor = NOCOLOR
+	end
+	
+onevent foundDoor
+	if color == RED then
+		points++
+		if points >= 7 then
+			emit victory
+		end
+		turnAround = TRUE
+	end
+
+onevent foundBlue
+	blueFound = TRUE
+	
+onevent foundRed
+	redFound = TRUE
+	
+onevent passed
+	redFound = FALSE
+	blueFound = FALSE
+	color = NOCOLOR
+	turnAround = FALSE
+	
+onevent victory
+	gameOver = TRUE
+#############################################################
+onevent ir_sensors		
+
+# nothing found yet
+	if redFound == FALSE and blueFound == FALSE then
+		leds[0] = 0
+		leds[2] = 1
+		leds[4] = 0
+		leds[6] = 1
+		
+		state = SEARCHRB
+	
+# someone else found blue -> search red
+	elseif redFound == FALSE and blueFound == TRUE and 
+  	    color == NOCOLOR then
+  	    	leds[0] = 0
+  	    	leds[2] = 1
+		leds[4] = 0
+		leds[6] = 0
+		
+		state = SEARCHR
+	
+	elseif turnAround == TRUE then
+		state = SEARCHB	
+				
+# found blue -> wait infront of it
+	elseif redFound == FALSE and blueFound == TRUE and
+		color == BLUE then
+		leds[0] = 0
+		leds[2] = 1
+		leds[4] = 1
+		leds[6] = 1
+		
+		state = WAIT
+	
+# someone else found red 
+	elseif redFound == TRUE and blueFound == FALSE and
+	 	color == NOCOLOR then
+	 	leds[0] = 0
+	 	leds[2] = 0
+		leds[4] = 0
+		leds[6] = 1
+		
+		state = SEARCHB
+	
+# found red -> wait
+	elseif redFound == TRUE and blueFound == FALSE and
+	   	color == RED then
+		leds[0] = 0
+		leds[2] = 1
+		leds[4] = 1
+		leds[6] = 1
+		state = WAIT
+	
+# both colors were found -> press button
+	elseif redFound == TRUE and blueFound == TRUE and
+	    color == RED then
+
+		leds[0] = 1
+		leds[2] = 1
+		leds[4] = 1
+		leds[6] = 1
+		state = WAIT
+
+# both colors were found -> pass door
+	elseif redFound == TRUE and blueFound == TRUE and
+	   	color == BLUE then
+	   	leds[0] = 1
+		leds[2] = 0
+		leds[4] = 0
+		leds[6] = 0
+		state = PASS
+	
+# both colors found by other e-pucks -> searchRB	
+	elseif redFound == TRUE and blueFound == TRUE and 
+	       color == NOCOLOR then
+		state = SEARCHRB
+
+# should not happen, but to be sure:	
+	else 
+		for i in 0:7 do
+			leds[i] = 1	
+		end
+		state = WAIT
+	end
+
+# e-puck won -> make victory dance
+	if points >= 7 then
+		state = DANCE
+	end	
+	
+# other e-puck won -> gameOver dance
+	if gameOver == TRUE then
+		state = DANCE
+	end
+
+# call corresponding functions
+	if state == SEARCHRB then
+		callsub searchRB
+	
+	elseif  state == SEARCHR then
+		callsub searchR
+		
+	elseif state == SEARCHB then
+		callsub searchB
+		
+	elseif state == PASS then
+		j++
+		callsub passDoor
+	
+	elseif state == DANCE then
+		j++
+		callsub dance
+		
+	else 
+		callsub wait
+	end</node>
+
+
+<!--node e-puck0-->
+<node nodeId="1" name="e-puck0"># color recognition
+var camRed = 0
+var camBlue = 0
+var camGreen = 0
+
+# counters
+var i
+var j = 0
+
+#calibration
+var r = 7
+var b = 0
+var g = 2
+var w = -2
+
+# proximity
+var proxRight = 0
+var proxLeft = 0
+var proxTotal = 0
+var ds
+var ds_left
+var ds_right
+
+# ground sensor
+var v[3]
+
+# controllers
+var redFound = FALSE
+var blueFound = FALSE
+var camColor = NOCOLOR
+var color = NOCOLOR
+var groundCounter = 0
+var points = 0
+var gameOver = FALSE
+var turnAround = FALSE
+var inPosition = FALSE
+var state = WAIT
+
+##############################################################################	
+sub wait
+	speed.left = 0
+	speed.right = 0
+	
+sub advancedLover # code from sample solution
+	# proximity
+	proxRight = (prox[0] + 3*prox[1] + prox[2])/5
+	proxLeft = (prox[7] + 3*prox[6] + prox[5])/5
+
+	# check which side is closer to obstacle
+	if proxRight > proxLeft then # turn left
+
+		# delta speed ds
+		call math.muldiv(ds, SPEED_NORM, proxRight, P_THRESH)
+
+		# right and left speed
+		speed.right = ds
+	   	speed.left = SPEED_NORM - ds
+
+	else # turn right
+
+		# delta speed ds
+		call math.muldiv(ds, SPEED_NORM, proxLeft, P_THRESH)
+
+		# right and left speed
+		speed.right = SPEED_NORM - ds
+	   	speed.left = ds
+	end
+
+sub positionAtDoor
+	call ground.get_values(v)
+	
+	# if at least one of the sensors is on line e-puck is in position
+	if not(v[0] < -50 and v[0] > -75) or not(v[2] < -50 and v[2] > -75) then
+		speed.left = 0
+		speed.right = 0
+		j = 0
+		inPosition = TRUE
+		emit foundDoor
+	# follow wall
+	else
+		callsub advancedLover
+	end
+
+sub love # implemented according to Braitenberg
+	# proximity
+	proxLeft = (3*prox[0] + prox[1])/4
+	proxRight = (3*prox[7] + prox[6])/4
+	call math.add(proxTotal, proxLeft,proxRight)
+
+	# delta speed ds
+	call math.muldiv(ds_left,SPEED_NORM,proxLeft,P_THRESH)
+	call math.muldiv(ds_right,SPEED_NORM,proxRight,P_THRESH)	
+	
+	# approach object, stop when in certain distance
+	if proxTotal < P_THRESH_LOVE then	
+	speed.right = SPEED_NORM - ds_left
+	speed.left = SPEED_NORM - ds_right
+	
+	# only emit found when object wasn't found already
+	else
+		if camColor == BLUE and blueFound == FALSE then
+			color = BLUE
+			blueFound = TRUE
+			emit foundBlue
+			
+		elseif camColor == RED and redFound == FALSE then
+			color = RED
+			redFound = TRUE
+			emit foundRed
+		end
+		callsub wait
+	end
+	
+sub explore	# from sample solution
+	# proximity
+	proxRight = (4*prox[0] + 2*prox[1] + prox[2])/7
+	proxLeft = (4*prox[7] + 2*prox[6] + prox[5])/7
+
+	# check which side is closer to obstacle
+	if proxRight > proxLeft then # turn left
+
+		# delta speed ds
+		call math.muldiv(ds, SPEED_NORM, proxRight, P_THRESH)
+
+		# right and left speed
+	   	speed.right = SPEED_NORM + ds
+	   	speed.left = SPEED_NORM - ds
+
+	else # turn right
+
+		# delta speed ds
+		call math.muldiv(ds, SPEED_NORM, proxLeft, P_THRESH)
+
+		# right and left speed
+		speed.right = SPEED_NORM - ds
+		speed.left = SPEED_NORM + ds
+
+	end
+
+sub searchRB
+	if camColor == RED then
+		callsub love
+
+	elseif camColor == BLUE then
+		callsub love
+		
+	else
+		callsub explore
+	end
+
+sub searchR
+	if camColor == RED then
+		callsub love
+		
+	else callsub explore 		
+	end
+
+sub searchB
+	if camColor == BLUE then
+		callsub love
+		
+	else callsub explore
+	end
+
+sub followLine
+	call ground.get_values(v)
+	# 0 & 2 not on line
+	if (v[0] < -55 and v[0] > -70) and (v[2] < -55 and v[2] > -70) then
+		groundCounter++
+	
+	# 0 not on line
+	elseif (v[0] < -55 and v[0] > -70) then
+		speed.left = 200
+		speed.right = 70
+		groundCounter = 0
+
+	# 2 not on line
+	elseif (v[2] < -55 and v[2] > -70) then
+		speed.left = 70
+		speed.right = 200
+		groundCounter = 0
+
+	else # both on line
+		speed.left = 200
+		speed.right = 200
+	end
+	
+	if groundCounter > 50 then
+		blueFound = FALSE
+		redFound = FALSE
+		color = NOCOLOR
+		j = 0	
+		inPosition = FALSE
+		groundCounter = 0
+		emit passed	
+		points+=2
+		if points >= 7 then
+			emit victory
+		end
+	end
+	
+sub passDoor
+	if inPosition == TRUE then
+	    if j > 100 then
+			callsub followLine
+		else 
+			callsub wait
+		end	
+	else
+		callsub positionAtDoor			
+	end
+	
+sub dance
+	# if winner -> blink
+	if points >= 7 then
+		if j%5 == 0 then
+			for i in 0:7 do
+				leds[i] = 1
+			end
+		else
+			for i in 0:7 do
+				leds[i] = 0	
+			end
+		end
+	end
+	
+	speed.left = SPEED_NORM
+	speed.right = -SPEED_NORM
+####################################################################
+onevent camera
+	# calculation of colors, only takes center pixels.
+	for i in 0:5 do
+		camRed += cam.red[i+28]	
+	end
+	camRed /= 6
+
+	for i in 0:5 do
+		camBlue += cam.blue[i+28]	
+	end
+	camBlue /= 6
+	
+	for i in 0:5 do
+		camGreen += cam.green[i+28]	
+	end
+	camGreen /= 6
+	
+	if camBlue > 30+w and camGreen > 30+w and camRed > 30+w then
+		camColor = NOCOLOR
+		
+	elseif 2*(camBlue -r) <= camRed and #camRed &amp;lt;= 4*camBlue and
+	   2*(camGreen -r) <= camRed #and camRed &amp;lt;= 3*camGreen 
+	   then
+		camColor = RED
+
+	#*	not needed since we didn't get to implement 3rd color
+	elseif camRed -g <= camGreen and 7*camBlue <= 6*(camGreen +g) and
+		   4*(camGreen +g) <= 9*camBlue then
+			color = GREEN
+	*#	
+
+	elseif 7*camRed <= 6*(camBlue +b) and 3*(camBlue -b) <= 9*camRed and
+	       camGreen -b <= camBlue and not(camBlue > 20 and 
+	       camRed > 20 and camGreen > 20) then
+		camColor = BLUE
+		
+	else
+		camColor = NOCOLOR
+	end
+	
+onevent foundDoor
+	if color == RED then
+		points++
+		if points >= 7 then
+			emit victory
+		end
+		turnAround = TRUE
+	end
+
+onevent foundBlue
+	blueFound = TRUE
+	
+onevent foundRed
+	redFound = TRUE
+	
+onevent passed
+	redFound = FALSE
+	blueFound = FALSE
+	color = NOCOLOR
+	turnAround = FALSE
+	
+onevent victory
+	gameOver = TRUE
+##############################################################################
+onevent ir_sensors		
+
+for i in 0:7 do
+	leds[i]=0
+end
+
+# nothing found yet
+	if redFound == FALSE and blueFound == FALSE then
+		leds[0] = 0
+		leds[2] = 1
+		leds[4] = 0
+		leds[6] = 1
+		
+		state = SEARCHRB
+	
+# someone else found blue -> search red
+	elseif redFound == FALSE and blueFound == TRUE and 
+  	    color == NOCOLOR then
+  	    leds[0] = 0
+  	    leds[2] = 1
+		leds[4] = 0
+		leds[6] = 0
+		
+		state = SEARCHR
+	
+	elseif turnAround == TRUE then
+		state = SEARCHB	
+				
+# found blue -> wait infront of it
+	elseif redFound == FALSE and blueFound == TRUE and
+		color == BLUE then
+		leds[0] = 0
+		leds[2] = 1
+		leds[4] = 1
+		leds[6] = 1
+		
+		state = WAIT
+	
+# someone else found red 
+	elseif redFound == TRUE and blueFound == FALSE and
+	 	color == NOCOLOR then
+	 	leds[0] = 0
+	 	leds[2] = 0
+		leds[4] = 0
+		leds[6] = 1
+		
+		state = SEARCHB
+	
+# found red -> wait
+	elseif redFound == TRUE and blueFound == FALSE and
+	   	color == RED then
+		leds[0] = 0
+		leds[2] = 1
+		leds[4] = 1
+		leds[6] = 1
+		state = WAIT
+	
+# both colors were found -> press button
+	elseif redFound == TRUE and blueFound == TRUE and
+	    color == RED then
+
+		leds[0] = 1
+		leds[2] = 1
+		leds[4] = 1
+		leds[6] = 1
+		state = WAIT
+
+# both colors were found -> pass door
+	elseif redFound == TRUE and blueFound == TRUE and
+	   	color == BLUE then
+	   	leds[0] = 1
+		leds[2] = 0
+		leds[4] = 0
+		leds[6] = 0
+		state = PASS
+	
+# both colors found by other e-pucks -> searchRB	
+	elseif redFound == TRUE and blueFound == TRUE and color == NOCOLOR then
+		state = SEARCHRB
+
+# should not happen, but to be sure:	
+	else 
+		for i in 0:7 do
+			leds[i] = 1	
+		end
+		state = WAIT
+	end
+
+# e-puck won -> make victory dance
+	if points >= 7 then
+		state = DANCE
+	end	
+	
+# other e-puck won -> gameOver dance
+	if gameOver == TRUE then
+		state = DANCE
+	end
+
+# call corresponding functions
+	if state == SEARCHRB then
+		callsub searchRB
+	
+	elseif  state == SEARCHR then
+		callsub searchR
+		
+	elseif state == SEARCHB then
+		callsub searchB
+		
+	elseif state == PASS then
+		j++
+		callsub passDoor
+	
+	elseif state == DANCE then
+		j++
+		callsub dance
+		
+	else 
+		callsub wait
+	end</node>
+
+
+<!--node e-puck1-->
+<node nodeId="2" name="e-puck1"># color recognition
+var camRed = 0
+var camBlue = 0
+var camGreen = 0
+
+# counters
+var i
+var j = 0
+
+#calibration
+var r = 7
+var b = 0
+var g = 2
+var w = -5
+
+# proximity
+var proxRight = 0
+var proxLeft = 0
+var proxTotal = 0
+var ds
+var ds_left
+var ds_right
+
+# ground sensor
+var v[3]
+
+# controllers
+var redFound = FALSE
+var blueFound = FALSE
+var camColor = NOCOLOR
+var color = NOCOLOR
+var groundCounter = 0
+var points = 0
+var gameOver = FALSE
+var turnAround = FALSE
+var inPosition = FALSE
+var state = WAIT
+##############################################################################	
+sub wait
+	speed.left = 0
+	speed.right = 0
+	
+sub advancedLover # code from sample solution
+	# proximity
+	proxRight = (prox[0] + 3*prox[1] + prox[2])/5
+	proxLeft = (prox[7] + 3*prox[6] + prox[5])/5
+
+	# check which side is closer to obstacle
+	if proxRight > proxLeft then # turn left
+
+		# delta speed ds
+		call math.muldiv(ds, SPEED_NORM, proxRight, P_THRESH)
+
+		# right and left speed
+		speed.right = ds
+	   	speed.left = SPEED_NORM - ds
+
+	else # turn right
+
+		# delta speed ds
+		call math.muldiv(ds, SPEED_NORM, proxLeft, P_THRESH)
+
+		# right and left speed
+		speed.right = SPEED_NORM - ds
+	   	speed.left = ds
+	end
+
+sub positionAtDoor
+	call ground.get_values(v)
+	
+	# if at least one of the sensors is on line e-puck is in position
+	if not(v[0] < -50 and v[0] > -75) or not(v[2] < -50 and v[2] > -75) then
+		speed.left = 0
+		speed.right = 0
+		inPosition = TRUE
+		emit foundDoor
+	# follow wall
+	else
+		callsub advancedLover
+	end
+
+sub love # implemented according to Braitenberg
+	# proximity
+	proxLeft = (3*prox[0] + prox[1])/4
+	proxRight = (3*prox[7] + prox[6])/4
+	call math.add(proxTotal, proxLeft,proxRight)
+
+	# delta speed ds
+	call math.muldiv(ds_left,SPEED_NORM,proxLeft,P_THRESH)
+	call math.muldiv(ds_right,SPEED_NORM,proxRight,P_THRESH)	
+	
+	# approach object, stop when in certain distance
+	if proxTotal < P_THRESH_LOVE then	
+	speed.right = SPEED_NORM - ds_left
+	speed.left = SPEED_NORM - ds_right
+	
+	# only emit found when object wasn't found already
+	else
+		if camColor == BLUE and blueFound == FALSE then
+			color = BLUE
+			blueFound = TRUE
+			emit foundBlue
+			
+		elseif camColor == RED and redFound == FALSE then
+			color = RED
+			redFound = TRUE
+			emit foundRed
+		end
+		callsub wait
+	end
+	
+sub explore	# from sample solution
+	# proximity
+	proxRight = (4*prox[0] + 2*prox[1] + prox[2])/7
+	proxLeft = (4*prox[7] + 2*prox[6] + prox[5])/7
+
+	# check which side is closer to obstacle
+	if proxRight > proxLeft then # turn left
+
+		# delta speed ds
+		call math.muldiv(ds, SPEED_NORM, proxRight, P_THRESH)
+
+		# right and left speed
+	   	speed.right = SPEED_NORM + ds
+	   	speed.left = SPEED_NORM - ds
+
+	else # turn right
+
+		# delta speed ds
+		call math.muldiv(ds, SPEED_NORM, proxLeft, P_THRESH)
+
+		# right and left speed
+		speed.right = SPEED_NORM - ds
+		speed.left = SPEED_NORM + ds
+
+	end
+
+sub searchRB
+	if camColor == RED then
+		callsub love
+
+	elseif camColor == BLUE then
+		callsub love
+		
+	else
+		callsub explore
+	end
+
+sub searchR
+	if camColor == RED then
+		callsub love
+		
+	else callsub explore 		
+	end
+
+sub searchB
+	if camColor == BLUE then
+		callsub love
+		
+	else callsub explore
+	end
+
+sub followLine
+	call ground.get_values(v)
+	# 0 & 2 not on line
+	if (v[0] < -55 and v[0] > -70) and (v[2] < -55 and v[2] > -70) then
+		groundCounter++
+	
+	# 0 not on line
+	elseif (v[0] < -55 and v[0] > -70) then
+		speed.left = 200
+		speed.right = 70
+		groundCounter = 0
+
+	# 2 not on line
+	elseif (v[2] < -55 and v[2] > -70) then
+		speed.left = 70
+		speed.right = 200
+		groundCounter = 0
+
+	else # both on line
+		speed.left = 200
+		speed.right = 200
+	end
+	
+	if groundCounter > 50 then
+		blueFound = FALSE
+		redFound = FALSE
+		color = NOCOLOR
+		j = 0	
+		inPosition = FALSE
+		groundCounter = 0
+		emit passed	
+		points+=2
+		if points >= 7 then
+			emit victory
+		end
+	end
+	
+sub passDoor
+	if j > 100 then
+		if inPosition == TRUE then
+			callsub followLine	
+		else
+			callsub positionAtDoor			
+		end
+	else 
+		callsub wait
+	end
+	
+sub dance
+	# if winner -> blink
+	if points >= 7 then
+		if j%5 == 0 then
+			for i in 0:7 do
+				leds[i] = 1
+			end
+		else
+			for i in 0:7 do
+				leds[i] = 0	
+			end
+		end
+	end
+	
+	speed.left = SPEED_NORM
+	speed.right = -SPEED_NORM
+####################################################################
+onevent camera
+	# calculation of colors, only takes center pixels.
+	for i in 0:5 do
+		camRed += cam.red[i+28]	
+	end
+	camRed /= 6
+
+	for i in 0:5 do
+		camBlue += cam.blue[i+28]	
+	end
+	camBlue /= 6
+	
+	for i in 0:5 do
+		camGreen += cam.green[i+28]	
+	end
+	camGreen /= 6
+	
+	if camBlue > 30+w and camGreen > 30+w and camRed > 30+w then
+		camColor = NOCOLOR
+		
+	elseif 2*(camBlue -r) <= camRed and #camRed &amp;lt;= 4*camBlue and
+	   2*(camGreen -r) <= camRed #and camRed &amp;lt;= 3*camGreen 
+	   then
+		camColor = RED
+
+	#*	not needed since we didn't get to implement 3rd color
+	elseif camRed -g <= camGreen and 7*camBlue <= 6*(camGreen +g) and
+		   4*(camGreen +g) <= 9*camBlue then
+			color = GREEN
+	*#	
+
+	elseif 7*camRed <= 6*(camBlue +b) and 3*(camBlue -b) <= 9*camRed and
+	       camGreen -b <= camBlue and not(camBlue > 20 and
+	       camRed > 20 and camGreen > 20) then
+		camColor = BLUE
+		
+	else
+		camColor = NOCOLOR
+	end
+	
+onevent foundDoor
+	if color == RED then
+		points++
+		if points >= 7 then
+			emit victory
+		end
+		turnAround = TRUE
+	end
+
+onevent foundBlue
+	blueFound = TRUE
+	
+onevent foundRed
+	redFound = TRUE
+	
+onevent passed
+	redFound = FALSE
+	blueFound = FALSE
+	color = NOCOLOR
+	turnAround = FALSE
+	
+onevent victory
+	gameOver = TRUE
+##############################################################################
+onevent ir_sensors		
+
+for i in 0:7 do
+	leds[i]=0
+end
+
+# nothing found yet
+	if redFound == FALSE and blueFound == FALSE then
+		leds[0] = 0
+		leds[2] = 1
+		leds[4] = 0
+		leds[6] = 1
+		
+		state = SEARCHRB
+	
+# someone else found blue -> search red
+	elseif redFound == FALSE and blueFound == TRUE and 
+  	    color == NOCOLOR then
+  	    leds[0] = 0
+  	    leds[2] = 1
+		leds[4] = 0
+		leds[6] = 0
+		
+		state = SEARCHR
+	
+	elseif turnAround == TRUE then
+		state = SEARCHB	
+				
+# found blue -> wait infront of it
+	elseif redFound == FALSE and blueFound == TRUE and
+		color == BLUE then
+		leds[0] = 0
+		leds[2] = 1
+		leds[4] = 1
+		leds[6] = 1
+		
+		state = WAIT
+	
+# someone else found red 
+	elseif redFound == TRUE and blueFound == FALSE and
+	 	color == NOCOLOR then
+	 	leds[0] = 0
+	 	leds[2] = 0
+		leds[4] = 0
+		leds[6] = 1
+		
+		state = SEARCHB
+	
+# found red -> wait
+	elseif redFound == TRUE and blueFound == FALSE and
+	   	color == RED then
+		leds[0] = 0
+		leds[2] = 1
+		leds[4] = 1
+		leds[6] = 1
+		state = WAIT
+	
+# both colors were found -> press button
+	elseif redFound == TRUE and blueFound == TRUE and
+	    color == RED then
+
+		leds[0] = 1
+		leds[2] = 1
+		leds[4] = 1
+		leds[6] = 1
+		state = WAIT
+
+# both colors were found -> pass door
+	elseif redFound == TRUE and blueFound == TRUE and
+	   	color == BLUE then
+	   	leds[0] = 1
+		leds[2] = 0
+		leds[4] = 0
+		leds[6] = 0
+		state = PASS
+	
+# both colors found by other e-pucks -> searchRB	
+	elseif redFound == TRUE and blueFound == TRUE and color == NOCOLOR then
+		state = SEARCHRB
+
+# should not happen, but to be sure:	
+	else 
+		for i in 0:7 do
+			leds[i] = 1	
+		end
+		state = WAIT
+	end
+
+# e-puck won -> make victory dance
+	if points >= 7 then
+		state = DANCE
+	end	
+	
+# other e-puck won -> gameOver dance
+	if gameOver == TRUE then
+		state = DANCE
+	end
+
+# call corresponding functions
+	if state == SEARCHRB then
+		callsub searchRB
+	
+	elseif  state == SEARCHR then
+		callsub searchR
+		
+	elseif state == SEARCHB then
+		callsub searchB
+		
+	elseif state == PASS then
+		j++
+		callsub passDoor
+	
+	elseif state == DANCE then
+		j++
+		callsub dance
+		
+	else 
+		callsub wait
+	end</node>
+
+</network>

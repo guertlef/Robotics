@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.1415926-2.5-1.40.14 (TeX Live 2013/Debian) (format=pdflatex 2015.3.27)  19 MAY 2015 15:00
+This is pdfTeX, Version 3.1415926-2.5-1.40.14 (TeX Live 2013/Debian) (format=pdflatex 2015.3.27)  25 MAY 2015 08:48
 entering extended mode
  restricted \write18 enabled.
  %&-line parsing enabled.
@@ -595,100 +595,151 @@ LaTeX Font Info:    External font `cmex10' loaded for size
 LaTeX Font Info:    External font `cmex10' loaded for size
 (Font)              <7> on input line 39.
 
-<images/epuck-look.jpg, id=65, 401.5pt x 301.125pt>
+<images/epuck-look.jpg, id=54, 401.5pt x 301.125pt>
 File: images/epuck-look.jpg Graphic file (type jpg)
 
 <use images/epuck-look.jpg>
-Package pdftex.def Info: images/epuck-look.jpg used on input line 57.
+Package pdftex.def Info: images/epuck-look.jpg used on input line 53.
 (pdftex.def)             Requested size: 142.26378pt x 106.70024pt.
 
-<images/epuck-concept.png, id=66, 401.5pt x 565.11125pt>
+<images/epuck-concept.png, id=55, 401.5pt x 565.11125pt>
 File: images/epuck-concept.png Graphic file (type png)
 
 <use images/epuck-concept.png>
-Package pdftex.def Info: images/epuck-concept.png used on input line 67.
+Package pdftex.def Info: images/epuck-concept.png used on input line 62.
 (pdftex.def)             Requested size: 200.7495pt x 282.55493pt.
- [1
+
+
+LaTeX Warning: `!h' float specifier changed to `!ht'.
+
+[1
 
 {/var/lib/texmf/fonts/map/pdftex/updmap/pdftex.map} <./images/epuck-look.jpg>]
-LaTeX Font Info:    Try loading font information for OMS+cmr on input line 77.
-
-(/usr/share/texlive/texmf-dist/tex/latex/base/omscmr.fd
+LaTeX Font Info:    Try loading font information for OMS+cmr on input line 73.
+ (/usr/share/texlive/texmf-dist/tex/latex/base/omscmr.fd
 File: omscmr.fd 1999/05/25 v2.5h Standard LaTeX font definitions
 )
 LaTeX Font Info:    Font shape `OMS/cmr/m/n' in size <12> not available
-(Font)              Font shape `OMS/cmsy/m/n' tried instead on input line 77.
+(Font)              Font shape `OMS/cmsy/m/n' tried instead on input line 73.
 
-<images/behaviourCode.png, id=81, 637.38126pt x 270.00874pt>
+<images/behaviourCode.png, id=71, 637.38126pt x 270.00874pt>
 File: images/behaviourCode.png Graphic file (type png)
 
 <use images/behaviourCode.png>
-Package pdftex.def Info: images/behaviourCode.png used on input line 94.
+Package pdftex.def Info: images/behaviourCode.png used on input line 91.
 (pdftex.def)             Requested size: 318.68985pt x 135.00403pt.
- [2 <./images/epuck-concept.png>] [3 <./images/behaviourCode.png>] [4]
+
+
+LaTeX Warning: `!h' float specifier changed to `!ht'.
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 97--98
+
+ []
+
+[2 <./images/epuck-concept.png>]
+Underfull \hbox (badness 10000) in paragraph at lines 99--103
+
+ []
+
+<images/LogicTable.png, id=83, 1006.76125pt x 275.0275pt>
+File: images/LogicTable.png Graphic file (type png)
+
+<use images/LogicTable.png>
+Package pdftex.def Info: images/LogicTable.png used on input line 109.
+(pdftex.def)             Requested size: 503.3794pt x 137.51341pt.
+
+Overfull \hbox (50.4115pt too wide) in paragraph at lines 109--110
+ [] 
+ []
+
+
+LaTeX Warning: `!h' float specifier changed to `!ht'.
+
+[3 <./images/behaviourCode.png>]
+<images/StateMachine.png, id=91, 1138.2525pt x 511.9125pt>
+File: images/StateMachine.png Graphic file (type png)
+
+<use images/StateMachine.png>
+Package pdftex.def Info: images/StateMachine.png used on input line 123.
+(pdftex.def)             Requested size: 452.9679pt x 203.71468pt.
+LaTeX Font Info:    External font `cmex10' loaded for size
+(Font)              <12> on input line 132.
+LaTeX Font Info:    External font `cmex10' loaded for size
+(Font)              <8> on input line 132.
+LaTeX Font Info:    External font `cmex10' loaded for size
+(Font)              <6> on input line 132.
+ [4 <./images/LogicTable.png> <./images/StateMachine.png>] <images/linediagramf
+inal.pdf, id=98, 614.295pt x 631.35875pt>
+File: images/linediagramfinal.pdf Graphic file (type pdf)
+
+<use images/linediagramfinal.pdf>
+Package pdftex.def Info: images/linediagramfinal.pdf used on input line 150.
+(pdftex.def)             Requested size: 307.14674pt x 315.6786pt.
+ [5 <./images/linediagramfinal.pdf>]
+LaTeX Font Info:    Try loading font information for OML+cmr on input line 169.
+
+
+(/usr/share/texlive/texmf-dist/tex/latex/base/omlcmr.fd
+File: omlcmr.fd 1999/05/25 v2.5h Standard LaTeX font definitions
+)
+LaTeX Font Info:    Font shape `OML/cmr/m/n' in size <12> not available
+(Font)              Font shape `OML/cmm/m/it' tried instead on input line 169.
+ [6]
+<images/SubroutinesOverview.png, id=126, 113.77928pt x 49.78285pt>
+File: images/SubroutinesOverview.png Graphic file (type png)
+
+<use images/SubroutinesOverview.png>
+Package pdftex.def Info: images/SubroutinesOverview.png used on input line 212.
+
+(pdftex.def)             Requested size: 341.33698pt x 149.34814pt.
+ [7 <./images/SubroutinesOverview.png>]
+Underfull \hbox (badness 10000) in paragraph at lines 256--259
+
+ []
+
+[8] [9] [10]
 Package hyperref Info: bookmark level for unknown lstlisting defaults to 0 on i
-nput line 151.
- (./code/code.aesl) (./code/code.aesl [5
+nput line 326.
+ (./code/07_13_GuertlerF_e.aesl [11
 
-])
-LaTeX Font Info:    External font `cmex10' loaded for size
-(Font)              <17.28> on input line 159.
-LaTeX Font Info:    External font `cmex10' loaded for size
-(Font)              <12> on input line 159.
-LaTeX Font Info:    External font `cmex10' loaded for size
-(Font)              <8> on input line 160.
-LaTeX Font Info:    External font `cmex10' loaded for size
-(Font)              <6> on input line 160.
-
-<figures/garfield.jpg, id=146, 365.365pt x 336.25626pt>
-File: figures/garfield.jpg Graphic file (type jpg)
-
-<use figures/garfield.jpg>
-Package pdftex.def Info: figures/garfield.jpg used on input line 165.
-(pdftex.def)             Requested size: 199.16928pt x 183.29964pt.
-
-
-LaTeX Warning: `h' float specifier changed to `ht'.
-
-(./code/code.aesl) [6] [7 <./figures/garfield.jpg>]
+] [12] [13] [14] [15] [16]
+[17] [18])
 
 Package caption Warning: Unused \captionsetup[table] on input line 17.
 See the caption package documentation for explanation.
 
-Package atveryend Info: Empty hook `BeforeClearDocument' on input line 240.
-[8]
-Package atveryend Info: Empty hook `AfterLastShipout' on input line 240.
+Package atveryend Info: Empty hook `BeforeClearDocument' on input line 329.
+[19]
+Package atveryend Info: Empty hook `AfterLastShipout' on input line 329.
  (./documentation.aux)
-Package atveryend Info: Executing hook `AtVeryEndDocument' on input line 240.
-Package atveryend Info: Executing hook `AtEndAfterFileList' on input line 240.
+Package atveryend Info: Executing hook `AtVeryEndDocument' on input line 329.
+Package atveryend Info: Executing hook `AtEndAfterFileList' on input line 329.
 Package rerunfilecheck Info: File `documentation.out' has not changed.
-(rerunfilecheck)             Checksum: 9C1D0FC8BB06BD3970D1B441896CF545;892.
-Package atveryend Info: Empty hook `AtVeryVeryEnd' on input line 240.
+(rerunfilecheck)             Checksum: BB278F81A6FD669AD38E28825A4C4DDC;690.
+Package atveryend Info: Empty hook `AtVeryVeryEnd' on input line 329.
  ) 
 Here is how much of TeX's memory you used:
- 9013 strings out of 494985
- 132878 string characters out of 6180356
- 256681 words of memory out of 5000000
- 12013 multiletter control sequences out of 15000+600000
- 12152 words of font info for 42 fonts, out of 8000000 for 9000
+ 9449 strings out of 494985
+ 139957 string characters out of 6180356
+ 250565 words of memory out of 5000000
+ 12023 multiletter control sequences out of 15000+600000
+ 9977 words of font info for 35 fonts, out of 8000000 for 9000
  36 hyphenation exceptions out of 8191
- 36i,8n,38p,653b,1756s stack positions out of 5000i,500n,10000p,200000b,80000s
-</usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmbx10.pfb></us
-r/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmbx12.pfb></usr/shar
-e/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmcsc10.pfb></usr/share/tex
-live/texmf-dist/fonts/type1/public/amsfonts/cm/cmr10.pfb></usr/share/texlive/te
-xmf-dist/fonts/type1/public/amsfonts/cm/cmr12.pfb></usr/share/texlive/texmf-dis
-t/fonts/type1/public/amsfonts/cm/cmr17.pfb></usr/share/texlive/texmf-dist/fonts
-/type1/public/amsfonts/cm/cmr6.pfb></usr/share/texlive/texmf-dist/fonts/type1/p
-ublic/amsfonts/cm/cmr8.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/am
-sfonts/cm/cmsl12.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts
-/cm/cmsl8.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cms
-y10.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmti12.pf
-b></usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmtt12.pfb>
-Output written on documentation.pdf (8 pages, 311262 bytes).
+ 36i,7n,38p,1113b,1759s stack positions out of 5000i,500n,10000p,200000b,80000s
+</usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmbx12.pfb></us
+r/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmcsc10.pfb></usr/sha
+re/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmmi12.pfb></usr/share/tex
+live/texmf-dist/fonts/type1/public/amsfonts/cm/cmr12.pfb></usr/share/texlive/te
+xmf-dist/fonts/type1/public/amsfonts/cm/cmr17.pfb></usr/share/texlive/texmf-dis
+t/fonts/type1/public/amsfonts/cm/cmsl12.pfb></usr/share/texlive/texmf-dist/font
+s/type1/public/amsfonts/cm/cmsy10.pfb></usr/share/texlive/texmf-dist/fonts/type
+1/public/amsfonts/cm/cmti12.pfb></usr/share/texlive/texmf-dist/fonts/type1/publ
+ic/amsfonts/cm/cmtt12.pfb>
+Output written on documentation.pdf (19 pages, 846503 bytes).
 PDF statistics:
- 282 PDF objects out of 1000 (max. 8388607)
- 252 compressed objects within 3 object streams
- 112 named destinations out of 1000 (max. 500000)
- 141 words of extra memory for PDF output out of 10000 (max. 10000000)
+ 813 PDF objects out of 1000 (max. 8388607)
+ 767 compressed objects within 8 object streams
+ 539 named destinations out of 1000 (max. 500000)
+ 132 words of extra memory for PDF output out of 10000 (max. 10000000)
 
